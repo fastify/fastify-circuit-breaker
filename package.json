@@ -1,0 +1,36 @@
+{
+  "name": "fastify-circuit-breaker",
+  "version": "0.1.0",
+  "description": "A low overhead circuit breaker for your routes",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard && tap test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fastify/fastify-circuit-breaker.git"
+  },
+  "keywords": [
+    "fastify",
+    "circuit breaker",
+    "circuit",
+    "breaker",
+    "overhead",
+    "speed"
+  ],
+  "author": "Tomas Della Vedova - @delvedor (http://delved.org)",
+  "license": "MIT",
+  "devDependencies": {
+    "fastify": "^1.0.0-rc.1",
+    "standard": "^10.0.3",
+    "tap": "^11.1.0"
+  },
+  "dependencies": {
+    "fastify-plugin": "^0.2.2",
+    "tiny-lru": "^1.5.0"
+  },
+  "bugs": {
+    "url": "https://github.com/fastify/fastify-circuit-breaker/issues"
+  },
+  "homepage": "https://github.com/fastify/fastify-circuit-breaker#readme"
+}
