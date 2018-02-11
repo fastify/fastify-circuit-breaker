@@ -4,7 +4,7 @@
   "description": "A low overhead circuit breaker for your routes",
   "main": "index.js",
   "scripts": {
-    "test": "standard && tap test.js"
+    "test": "standard && tap -j4 test.js"
   },
   "repository": {
     "type": "git",

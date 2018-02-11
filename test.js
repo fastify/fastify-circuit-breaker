@@ -385,3 +385,112 @@ test('Custom options should overwrite the globals', t => {
     }, JSON.parse(res.payload))
   })
 })
+
+test('Should handle also errors with statusCode property', t => {
+  t.plan(6)
+
+  const fastify = Fastify()
+  fastify.register(circuitBreaker, {
+    threshold: 2
+  })
+
+  fastify.after(() => {
+    opts.beforeHandler = fastify.circuitBreaker()
+    fastify.get('/', opts, (req, reply) => {
+      const error = new Error('kaboom')
+      error.statusCode = 501
+      reply.send(error)
+    })
+  })
+
+  fastify.inject('/', (err, res) => {
+    t.error(err)
+    t.strictEqual(res.statusCode, 501)
+    t.deepEqual({
+      error: 'Not Implemented',
+      message: 'kaboom',
+      statusCode: 501
+    }, JSON.parse(res.payload))
+  })
+
+  fastify.inject('/', (err, res) => {
+    t.error(err)
+    t.strictEqual(res.statusCode, 503)
+    t.deepEqual({
+      error: 'Service Unavailable',
+      message: 'Circuit open',
+      statusCode: 503
+    }, JSON.parse(res.payload))
+  })
+})
+
+test('If a route is not under the circuit breaker, _cbRouteId should always be equal to 0', t => {
+  t.plan(8)
+
+  const fastify = Fastify()
+  fastify.register(circuitBreaker)
+
+  fastify.get('/first', (req, reply) => {
+    t.ok(req._cbRouteId === 0)
+    reply.send({ hello: 'world' })
+  })
+
+  fastify.get('/second', (req, reply) => {
+    t.ok(req._cbRouteId === 0)
+    reply.send({ hello: 'world' })
+  })
+
+  fastify.inject('/first', (err, res) => {
+    t.error(err)
+    t.strictEqual(res.statusCode, 200)
+    t.deepEqual({ hello: 'world' }, JSON.parse(res.payload))
+  })
+
+  fastify.inject('/second', (err, res) => {
+    t.error(err)
+    t.strictEqual(res.statusCode, 200)
+    t.deepEqual({ hello: 'world' }, JSON.parse(res.payload))
+  })
+})
+
+test('Should work only if the status code is >= 500', t => {
+  t.plan(6)
+
+  const fastify = Fastify()
+  fastify.register(circuitBreaker, {
+    threshold: 1
+  })
+
+  fastify.after(() => {
+    opts.beforeHandler = fastify.circuitBreaker()
+    fastify.get('/first', opts, (req, reply) => {
+      const error = new Error('kaboom')
+      error.statusCode = 400
+      reply.send(error)
+    })
+
+    fastify.get('/second', opts, (req, reply) => {
+      reply.code(400).send(new Error('kaboom'))
+    })
+  })
+
+  fastify.inject('/first', (err, res) => {
+    t.error(err)
+    t.strictEqual(res.statusCode, 400)
+    t.deepEqual({
+      error: 'Bad Request',
+      message: 'kaboom',
+      statusCode: 400
+    }, JSON.parse(res.payload))
+  })
+
+  fastify.inject('/second', (err, res) => {
+    t.error(err)
+    t.strictEqual(res.statusCode, 400)
+    t.deepEqual({
+      error: 'Bad Request',
+      message: 'kaboom',
+      statusCode: 400
+    }, JSON.parse(res.payload))
+  })
+})
