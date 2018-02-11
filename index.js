@@ -29,7 +29,7 @@ function circuitBreakerPlugin (fastify, opts, next) {
 
   function circuitBreaker (opts) {
     opts = opts || {}
-    const thisRouteId = routeId + 1
+    const thisRouteId = ++routeId
     cache.set(thisRouteId, {
       status: CLOSE,
       failures: 0,
@@ -39,7 +39,6 @@ function circuitBreakerPlugin (fastify, opts, next) {
       timeout: opts.timeout || timeout,
       resetTimeout: opts.resetTimeout || resetTimeout
     })
-    routeId++
     return function beforeHandler (req, reply, next) {
       var route = cache.get(thisRouteId)
       if (route.status === OPEN) {
@@ -60,7 +59,7 @@ function circuitBreakerPlugin (fastify, opts, next) {
   }
 
   function onSend (req, reply, payload, next) {
-    if (req._cbIsOpen === true) {
+    if (req._cbRouteId === 0 || req._cbIsOpen === true) {
       return next()
     }
     var route = cache.get(req._cbRouteId)
