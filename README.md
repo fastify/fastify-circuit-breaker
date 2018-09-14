@@ -1,6 +1,8 @@
 <img align="right" width="350" height="auto" src="https://martinfowler.com/bliki/images/circuitBreaker/state.png">
 
 # fastify-circuit-breaker
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/fastify/fastify-circuit-breaker.svg)](https://greenkeeper.io/)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](http://standardjs.com/)  [![Build Status](https://travis-ci.org/delvedor/easy-breaker.svg?branch=master)](https://travis-ci.org/delvedor/easy-breaker)
 
 A low overhead [circuit breaker](https://martinfowler.com/bliki/CircuitBreaker.html) for your routes.
