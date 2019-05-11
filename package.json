@@ -23,7 +23,7 @@
   "devDependencies": {
     "fastify": "^2.0.0",
     "standard": "^12.0.1",
-    "tap": "^12.0.1"
+    "tap": "^12.6.6"
   },
   "dependencies": {
     "fastify-plugin": "^1.2.0",
@@ -32,5 +32,10 @@
   "bugs": {
     "url": "https://github.com/fastify/fastify-circuit-breaker/issues"
   },
-  "homepage": "https://github.com/fastify/fastify-circuit-breaker#readme"
+  "homepage": "https://github.com/fastify/fastify-circuit-breaker#readme",
+  "greenkeeper": {
+    "ignore": [
+      "tap"
+    ]
+  }
 }
