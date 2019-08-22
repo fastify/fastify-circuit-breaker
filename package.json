@@ -22,7 +22,7 @@
   "license": "MIT",
   "devDependencies": {
     "fastify": "^2.0.0",
-    "standard": "^13.0.1",
+    "standard": "^14.0.2",
     "tap": "^12.6.6"
   },
   "dependencies": {
