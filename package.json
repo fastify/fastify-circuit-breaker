@@ -32,10 +32,5 @@
   "bugs": {
     "url": "https://github.com/fastify/fastify-circuit-breaker/issues"
   },
-  "homepage": "https://github.com/fastify/fastify-circuit-breaker#readme",
-  "greenkeeper": {
-    "ignore": [
-      "tap"
-    ]
-  }
+  "homepage": "https://github.com/fastify/fastify-circuit-breaker#readme"
 }
