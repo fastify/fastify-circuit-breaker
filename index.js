@@ -74,7 +74,7 @@ function circuitBreakerPlugin (fastify, opts, next) {
       return next(new TimeoutError())
     }
 
-    if (reply.res.statusCode < 500) {
+    if (reply.raw.statusCode < 500) {
       route.status = CLOSE
       route.failures = 0
       return next()
@@ -133,6 +133,6 @@ function circuitBreakerPlugin (fastify, opts, next) {
 }
 
 module.exports = fp(circuitBreakerPlugin, {
-  fastify: '>=0.43.0',
+  fastify: '>=3.0.0',
   name: 'fastify-circuit-breaker'
 })
