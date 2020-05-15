@@ -21,21 +21,16 @@
   "author": "Tomas Della Vedova - @delvedor (http://delved.org)",
   "license": "MIT",
   "devDependencies": {
-    "fastify": "^2.0.0",
+    "fastify": "^3.0.0-rc.1",
     "standard": "^14.0.2",
     "tap": "^12.6.6"
   },
   "dependencies": {
-    "fastify-plugin": "^1.2.0",
+    "fastify-plugin": "^2.0.0",
     "tiny-lru": "^7.0.0"
   },
   "bugs": {
     "url": "https://github.com/fastify/fastify-circuit-breaker/issues"
   },
-  "homepage": "https://github.com/fastify/fastify-circuit-breaker#readme",
-  "greenkeeper": {
-    "ignore": [
-      "tap"
-    ]
-  }
+  "homepage": "https://github.com/fastify/fastify-circuit-breaker#readme"
 }

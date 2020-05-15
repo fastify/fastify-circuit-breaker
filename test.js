@@ -25,7 +25,7 @@ test('Should respond with a 503 once the threshold has been reached', t => {
   })
 
   fastify.after(() => {
-    opts.beforeHandler = fastify.circuitBreaker()
+    opts.preHandler = fastify.circuitBreaker()
     fastify.get('/', opts, (req, reply) => {
       t.is(typeof req._cbTime, 'number')
       setTimeout(() => {
@@ -78,7 +78,7 @@ test('Should respond with a 503 once the threshold has been reached (timeout)', 
   })
 
   fastify.after(() => {
-    opts.beforeHandler = fastify.circuitBreaker()
+    opts.preHandler = fastify.circuitBreaker()
     fastify.get('/', opts, (req, reply) => {
       t.is(typeof req._cbTime, 'number')
       setTimeout(() => {
@@ -143,7 +143,7 @@ test('Should return 503 until the circuit is open', t => {
   })
 
   fastify.after(() => {
-    opts.beforeHandler = fastify.circuitBreaker()
+    opts.preHandler = fastify.circuitBreaker()
     fastify.get('/', opts, (req, reply) => {
       t.is(typeof req._cbTime, 'number')
       setTimeout(() => {
@@ -194,7 +194,7 @@ test('If the staus is half-open and there is an error the state should be open a
   })
 
   fastify.after(() => {
-    opts.beforeHandler = fastify.circuitBreaker()
+    opts.preHandler = fastify.circuitBreaker()
     fastify.get('/', opts, (req, reply) => {
       t.is(typeof req._cbTime, 'number')
       setTimeout(() => {
@@ -258,7 +258,7 @@ test('Should customize circuit open error message', t => {
   })
 
   fastify.after(() => {
-    opts.beforeHandler = fastify.circuitBreaker()
+    opts.preHandler = fastify.circuitBreaker()
     fastify.get('/', opts, (req, reply) => {
       t.is(typeof req._cbTime, 'number')
       setTimeout(() => {
@@ -291,7 +291,7 @@ test('Should customize timeout error message', t => {
   })
 
   fastify.after(() => {
-    opts.beforeHandler = fastify.circuitBreaker()
+    opts.preHandler = fastify.circuitBreaker()
     fastify.get('/', opts, (req, reply) => {
       t.is(typeof req._cbTime, 'number')
       setTimeout(() => {
@@ -322,7 +322,7 @@ test('One route should not interfere with others', t => {
   })
 
   fastify.after(() => {
-    opts.beforeHandler = fastify.circuitBreaker()
+    opts.preHandler = fastify.circuitBreaker()
     fastify.get('/', opts, (req, reply) => {
       t.is(typeof req._cbTime, 'number')
       setTimeout(() => {
@@ -364,7 +364,7 @@ test('Custom options should overwrite the globals', t => {
   })
 
   fastify.after(() => {
-    opts.beforeHandler = fastify.circuitBreaker({ threshold: 2 })
+    opts.preHandler = fastify.circuitBreaker({ threshold: 2 })
     fastify.get('/', opts, (req, reply) => {
       t.is(typeof req._cbTime, 'number')
       setTimeout(() => {
@@ -395,7 +395,7 @@ test('Should handle also errors with statusCode property', t => {
   })
 
   fastify.after(() => {
-    opts.beforeHandler = fastify.circuitBreaker()
+    opts.preHandler = fastify.circuitBreaker()
     fastify.get('/', opts, (req, reply) => {
       const error = new Error('kaboom')
       error.statusCode = 501
@@ -462,7 +462,7 @@ test('Should work only if the status code is >= 500', t => {
   })
 
   fastify.after(() => {
-    opts.beforeHandler = fastify.circuitBreaker()
+    opts.preHandler = fastify.circuitBreaker()
     fastify.get('/first', opts, (req, reply) => {
       const error = new Error('kaboom')
       error.statusCode = 400

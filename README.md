@@ -2,8 +2,7 @@
 
 # fastify-circuit-breaker
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/fastify/fastify-circuit-breaker.svg)](https://greenkeeper.io/)
-[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](http://standardjs.com/)  [![Build Status](https://travis-ci.org/delvedor/easy-breaker.svg?branch=master)](https://travis-ci.org/delvedor/easy-breaker)
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](http://standardjs.com/)  ![CI workflow](https://github.com/fastify/fastify-circuit-breaker/workflows/CI%20workflow/badge.svg)
 
 A low overhead [circuit breaker](https://martinfowler.com/bliki/CircuitBreaker.html) for your routes.
 
@@ -15,7 +14,7 @@ npm i fastify-circuit-breaker
 ## Usage
 Register the plugin and if needed pass to it some custom option.<br>
 This plugin will add an `onSend` hook and expose a `circuitBreaker` utility.<br>
-Call `fastify.circuitBreaker()` when declaring the `beforeHandler` option of a route, in this way you will put that very specific route under the *circuit breaking* check.
+Call `fastify.circuitBreaker()` when declaring the `preHandler` option of a route, in this way you will put that very specific route under the *circuit breaking* check.
 ```js
 const fastify = require('fastify')()
 
@@ -31,7 +30,7 @@ fastify.register(function (instance, opts, next) {
         delay: { type: 'number' }
       }
     },
-    beforeHandler: instance.circuitBreaker(),
+    preHandler: instance.circuitBreaker(),
     handler: function (req, reply) {
       setTimeout(() => {
         reply.send(
