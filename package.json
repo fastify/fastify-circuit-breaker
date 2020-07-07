@@ -21,7 +21,7 @@
   "author": "Tomas Della Vedova - @delvedor (http://delved.org)",
   "license": "MIT",
   "devDependencies": {
-    "fastify": "^3.0.0-rc.4",
+    "fastify": "^3.0.0",
     "standard": "^14.0.2",
     "tap": "^14.10.7"
   },
