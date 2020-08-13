@@ -18,7 +18,7 @@ export interface FastifyCircuitBreakerBeforeHandler {
     req: FastifyRequest,
     reply: FastifyReply,
     next: HookHandlerDoneFunction
-  ): FastifyReply | void;
+  ): Promise<unknown> | void;
 }
 
 export type FastifyCircuitBreakerOptions = {
