@@ -1,7 +1,7 @@
 import {
   FastifyPlugin,
   FastifyRequest,
-  FastifyResponse,
+  FastifyReply,
   HookHandlerDoneFunction,
 } from "fastify";
 
