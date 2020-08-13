@@ -8,7 +8,7 @@ import {
 declare module "fastify" {
   interface FastifyInstance {
     circuitBreaker(
-      options?: FastifyCircuitBreakerPlugin
+      options?: FastifyCircuitBreakerOptions
     ): FastifyCircuitBreakerBeforeHandler;
   }
 }
@@ -21,7 +21,7 @@ export interface FastifyCircuitBreakerBeforeHandler {
   ): FastifyReply | void;
 }
 
-export type FastifyCircuitBreakerPlugin = {
+export type FastifyCircuitBreakerOptions = {
   /**
    * The maximum numbers of failures you accept to have before opening the circuit.
    * @default 5
@@ -40,6 +40,6 @@ export type FastifyCircuitBreakerPlugin = {
   resetTimeout?: number;
 };
 
-declare const fastifyCircuitBreaker: FastifyPlugin<FastifyCircuitBreakerPlugin>;
+export const fastifyCircuitBreaker: FastifyPlugin<FastifyCircuitBreakerOptions>;
 
 export default fastifyCircuitBreaker;
