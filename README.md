@@ -59,7 +59,7 @@ fastify.register(require('fastify-circuit-breaker'), {
 ```
 - `threshold`: is the maximum numbers of failures you accept to have before opening the circuit.
 - `timeout:` is the maximum number of milliseconds you can wait before return a `TimeoutError`.
-- `resetTimeout`: number of milliseconds before before the circuit will move from `open` to `half-open`
+- `resetTimeout`: number of milliseconds before the circuit will move from `open` to `half-open`
 
 Otherwise you can customize every single route by passing the same options to the `circuitBreaker` utility:
 ```js
