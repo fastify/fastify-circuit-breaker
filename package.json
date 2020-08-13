@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "description": "A low overhead circuit breaker for your routes",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "standard && tap -j4 test.js"
   },
