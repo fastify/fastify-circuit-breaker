@@ -2,10 +2,11 @@ name: CI workflow
 on: [push, pull_request]
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x]
+        node-version: [10.x, 12.x, 13.x, 14.x]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -16,3 +17,4 @@ jobs:
       run: npm install --ignore-scripts
     - name: Test
       run: npm test
+      run: npm run typescript
