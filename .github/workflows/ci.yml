@@ -16,6 +16,4 @@ jobs:
       - name: Install Dependencies
         run: npm install --ignore-scripts
       - name: Test
-        run: |
-          npm test
-          npm run typescript
+        run: npm test
