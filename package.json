@@ -6,7 +6,7 @@
   "types": "index.d.ts",
   "type": "commonjs",
   "scripts": {
-    "test": "standard && tap -j4 test.js",
+    "test": "standard && tap -j4 test.js && npm run typescript",
     "typescript": "tsd"
   },
   "repository": {
