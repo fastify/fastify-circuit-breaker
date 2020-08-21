@@ -3,8 +3,11 @@
   "version": "1.0.1",
   "description": "A low overhead circuit breaker for your routes",
   "main": "index.js",
+  "types": "index.d.ts",
+  "type": "commonjs",
   "scripts": {
-    "test": "standard && tap -j4 test.js"
+    "test": "standard && tap -j4 test.js && npm run typescript",
+    "typescript": "tsd"
   },
   "repository": {
     "type": "git",
@@ -21,9 +24,11 @@
   "author": "Tomas Della Vedova - @delvedor (http://delved.org)",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^14.0.27",
     "fastify": "^3.0.0",
     "standard": "^14.0.2",
-    "tap": "^14.10.7"
+    "tap": "^14.10.7",
+    "tsd": "^0.13.1"
   },
   "dependencies": {
     "fastify-plugin": "^2.0.0",
