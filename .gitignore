@@ -65,3 +65,4 @@ typings/
 
 # lock files
 package-lock.json
+.idea
