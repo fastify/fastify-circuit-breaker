@@ -6,7 +6,7 @@
   "types": "index.d.ts",
   "type": "commonjs",
   "scripts": {
-    "test": "standard && tap -j4 test.js && npm run typescript",
+    "testzz": "standard && tap -j4 test.js && npm run typescript",
     "typescript": "tsd"
   },
   "repository": {
@@ -26,6 +26,7 @@
   "devDependencies": {
     "@types/node": "^14.14.14",
     "fastify": "^3.9.2",
+    "husky": "^4.3.6",
     "standard": "^16.0.3",
     "tap": "^14.11.0",
     "tsd": "^0.14.0"
@@ -37,5 +38,10 @@
   "bugs": {
     "url": "https://github.com/fastify/fastify-circuit-breaker/issues"
   },
-  "homepage": "https://github.com/fastify/fastify-circuit-breaker#readme"
+  "homepage": "https://github.com/fastify/fastify-circuit-breaker#readme",
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test"
+    }
+  }
 }
