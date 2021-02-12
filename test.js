@@ -627,3 +627,74 @@ test('onTimeout will handle a thrown error', t => {
     }, JSON.parse(res.payload))
   })
 })
+
+test('onCircuitOpen can be an async function', t => {
+  t.plan(6)
+
+  const fastify = Fastify()
+  fastify.register(circuitBreaker, {
+    threshold: 2,
+    onCircuitOpen: async (req, reply) => {
+      const statusCode = await Promise.resolve(503)
+      reply.statusCode = statusCode
+      throw new Error('circuit open')
+    }
+  })
+
+  fastify.after(() => {
+    fastify.get('/', { preHandler: fastify.circuitBreaker() }, (req, reply) => {
+      reply.send(new Error('kaboom'))
+    })
+  })
+
+  fastify.inject('/', (err, res) => {
+    t.error(err)
+    t.strictEqual(res.statusCode, 500)
+    t.deepEqual({
+      error: 'Internal Server Error',
+      message: 'kaboom',
+      statusCode: 500
+    }, JSON.parse(res.payload))
+  })
+
+  fastify.inject('/', (err, res) => {
+    t.error(err)
+    t.strictEqual(res.statusCode, 503)
+    t.deepEqual({
+      error: 'Service Unavailable',
+      message: 'circuit open',
+      statusCode: 503
+    }, JSON.parse(res.payload))
+  })
+})
+
+test('onTimeout can be an async function', t => {
+  t.plan(2)
+
+  const fastify = Fastify()
+  fastify.register(circuitBreaker, {
+    timeout: 50,
+    onTimeout: async (req, reply) => {
+      const statusCode = await Promise.resolve(504)
+      reply.statusCode = statusCode
+      throw new Error('timed out')
+    }
+  })
+
+  fastify.after(() => {
+    fastify.get('/', { preHandler: fastify.circuitBreaker() }, (req, reply) => {
+      setTimeout(() => {
+        reply.send({ hello: 'world' })
+      }, 100)
+    })
+  })
+
+  fastify.inject('/', (err, res) => {
+    t.error(err)
+    t.deepEqual({
+      error: 'Gateway Timeout',
+      message: 'timed out',
+      statusCode: 504
+    }, JSON.parse(res.payload))
+  })
+})

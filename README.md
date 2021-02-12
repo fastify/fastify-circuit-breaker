@@ -55,11 +55,11 @@ fastify.register(require('fastify-circuit-breaker'), {
   threshold: 3, // default 5
   timeout: 5000, // default 10000
   resetTimeout: 5000 // default 10000
-  onCircuitOpen: (req, reply) => {
+  onCircuitOpen: async (req, reply) => {
     reply.statusCode = 500
     throw new Error('a custom error')
   },
-  onTimeout: (req, reply) => {
+  onTimeout: async (req, reply) => {
     reply.statusCode = 504
     return 'timed out'
   }
