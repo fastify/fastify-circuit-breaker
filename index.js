@@ -15,9 +15,11 @@ function circuitBreakerPlugin (fastify, opts, next) {
   const threshold = opts.threshold || 5
   const timeoutErrorMessage = opts.timeoutErrorMessage || 'Timeout'
   const circuitOpenErrorMessage = opts.circuitOpenErrorMessage || 'Circuit open'
+  const onCircuitOpen = opts.onCircuitOpen
+  const onTimeout = opts.onTimeout
   const cache = lru(opts.cache || 500)
 
-  var routeId = 0
+  let routeId = 0
 
   fastify.decorateRequest('_cbTime', 0)
   fastify.decorateRequest('_cbIsOpen', false)
@@ -37,32 +39,51 @@ function circuitBreakerPlugin (fastify, opts, next) {
       isResetTimerRunning: false,
       threshold: opts.threshold || threshold,
       timeout: opts.timeout || timeout,
-      resetTimeout: opts.resetTimeout || resetTimeout
+      resetTimeout: opts.resetTimeout || resetTimeout,
+      onCircuitOpen: opts.onCircuitOpen || onCircuitOpen,
+      onTimeout: opts.onTimeout || onTimeout
     })
-    return function beforeHandler (req, reply, next) {
-      var route = cache.get(thisRouteId)
+    return async function beforeHandler (req, reply) {
+      const route = cache.get(thisRouteId)
       if (route.status === OPEN) {
         req._cbIsOpen = true
+        if (route.onCircuitOpen) {
+          try {
+            const errorPayload = await route.onCircuitOpen(req, reply)
+            return reply.send(errorPayload)
+          } catch (error) {
+            return reply.send(error)
+          }
+        }
+
         return reply.send(new CircuitOpenError())
       }
 
       if (route.status === HALFOPEN && route.currentlyRunningRequest >= 1) {
         req._cbIsOpen = true
+        if (route.onCircuitOpen) {
+          try {
+            const errorPayload = await route.onCircuitOpen(req, reply)
+            return reply.send(errorPayload)
+          } catch (error) {
+            return reply.send(error)
+          }
+        }
+
         return reply.send(new CircuitOpenError())
       }
 
       route.currentlyRunningRequest++
       req._cbRouteId = thisRouteId
       req._cbTime = getTime()
-      next()
     }
   }
 
-  function onSend (req, reply, payload, next) {
+  async function onSend (req, reply, payload) {
     if (req._cbRouteId === 0 || req._cbIsOpen === true) {
-      return next()
+      return
     }
-    var route = cache.get(req._cbRouteId)
+    const route = cache.get(req._cbRouteId)
     route.currentlyRunningRequest--
 
     if (getTime() - req._cbTime > route.timeout) {
@@ -71,33 +92,41 @@ function circuitBreakerPlugin (fastify, opts, next) {
         route.status = OPEN
         runTimer(req._cbRouteId)
       }
-      return next(new TimeoutError())
+      if (route.onTimeout) {
+        const errorPayload = await route.onTimeout(req, reply)
+        return errorPayload
+      }
+
+      throw new TimeoutError()
     }
 
     if (reply.raw.statusCode < 500) {
       route.status = CLOSE
       route.failures = 0
-      return next()
+      return
     }
 
     route.failures++
     if (route.status === HALFOPEN) {
       route.status = OPEN
       runTimer(req._cbRouteId)
-      return next()
+      return
     }
 
     if (route.failures >= route.threshold) {
       route.status = OPEN
       runTimer(req._cbRouteId)
-      return next(new CircuitOpenError())
-    }
+      if (route.onCircuitOpen) {
+        const errorPayload = await route.onCircuitOpen(req, reply)
+        return errorPayload
+      }
 
-    next()
+      throw new CircuitOpenError()
+    }
   }
 
   function runTimer (routeId) {
-    var route = cache.get(routeId)
+    const route = cache.get(routeId)
     if (route.isResetTimerRunning === true) return
     route.isResetTimerRunning = true
     setTimeout(() => {
@@ -127,7 +156,7 @@ function circuitBreakerPlugin (fastify, opts, next) {
   inherits(CircuitOpenError, Error)
 
   function getTime () {
-    var ts = process.hrtime()
+    const ts = process.hrtime()
     return (ts[0] * 1e3) + (ts[1] / 1e6)
   }
 }

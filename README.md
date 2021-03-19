@@ -55,11 +55,21 @@ fastify.register(require('fastify-circuit-breaker'), {
   threshold: 3, // default 5
   timeout: 5000, // default 10000
   resetTimeout: 5000 // default 10000
+  onCircuitOpen: async (req, reply) => {
+    reply.statusCode = 500
+    throw new Error('a custom error')
+  },
+  onTimeout: async (req, reply) => {
+    reply.statusCode = 504
+    return 'timed out'
+  }
 })
 ```
 - `threshold`: is the maximum numbers of failures you accept to have before opening the circuit.
 - `timeout:` is the maximum number of milliseconds you can wait before return a `TimeoutError`.
 - `resetTimeout`: number of milliseconds before the circuit will move from `open` to `half-open`
+- `onCircuitOpen`: async function that gets called when the circuit is `open` due to errors. It can modify the reply and return a `string` | `Buffer` | `Stream` payload.  If an `Error` is thrown it will be routed to your error handler. 
+- `onTimeout`: async function that gets called when the circuit is `open` due to timeouts.  It can modify the reply and return a `string` | `Buffer` | `Stream` | `Error` payload.  If an `Error` is thrown it will be routed to your error handler.  
 
 Otherwise you can customize every single route by passing the same options to the `circuitBreaker` utility:
 ```js
@@ -72,7 +82,7 @@ fastify.circuitBreaker({
 If you pass the options directly to the utility, it will take precedence over the global configuration.
 
 ### Customize error messages
-If needed you can change the default error message for the *circui open error* and the *timeout error*:
+If needed you can change the default error message for the *circuit open error* and the *timeout error*:
 ```js
 fastify.register(require('fastify-circuit-breaker'), {
   timeoutErrorMessage: 'Ronf...', // default 'Timeout'
