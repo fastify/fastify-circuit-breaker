@@ -74,7 +74,7 @@ fastify.register(require('fastify-circuit-breaker'), {
 - `onCircuitOpen`: async function that gets called when the circuit is `open` due to errors. It can modify the reply and return a `string` | `Buffer` | `Stream` payload.  If an `Error` is thrown it will be routed to your error handler. 
 - `onTimeout`: async function that gets called when the circuit is `open` due to timeouts.  It can modify the reply and return a `string` | `Buffer` | `Stream` | `Error` payload.  If an `Error` is thrown it will be routed to your error handler.  
 
-Otherwise you can customize every single route by passing the same options to the `circuitBreaker` utility:
+Otherwise, you can customize every single route by passing the same options to the `circuitBreaker` utility:
 ```js
 fastify.circuitBreaker({
   threshold: 3, // default 5
