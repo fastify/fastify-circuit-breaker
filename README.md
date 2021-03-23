@@ -2,7 +2,10 @@
 
 # fastify-circuit-breaker
 
-[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](http://standardjs.com/)  ![CI workflow](https://github.com/fastify/fastify-circuit-breaker/workflows/CI%20workflow/badge.svg)
+![CI](https://github.com/fastify/fastify-circuit-breaker/workflows/CI/badge.svg)
+[![NPM version](https://img.shields.io/npm/v/fastify-circuit-breaker.svg?style=flat)](https://www.npmjs.com/package/fastify-circuit-breaker)
+[![Known Vulnerabilities](https://snyk.io/test/github/fastify/fastify-circuit-breaker/badge.svg)](https://snyk.io/test/github/fastify/fastify-circuit-breaker)
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://standardjs.com/)
 
 A low overhead [circuit breaker](https://martinfowler.com/bliki/CircuitBreaker.html) for your routes.
 
@@ -71,7 +74,7 @@ fastify.register(require('fastify-circuit-breaker'), {
 - `onCircuitOpen`: async function that gets called when the circuit is `open` due to errors. It can modify the reply and return a `string` | `Buffer` | `Stream` payload.  If an `Error` is thrown it will be routed to your error handler. 
 - `onTimeout`: async function that gets called when the circuit is `open` due to timeouts.  It can modify the reply and return a `string` | `Buffer` | `Stream` | `Error` payload.  If an `Error` is thrown it will be routed to your error handler.  
 
-Otherwise you can customize every single route by passing the same options to the `circuitBreaker` utility:
+Otherwise, you can customize every single route by passing the same options to the `circuitBreaker` utility:
 ```js
 fastify.circuitBreaker({
   threshold: 3, // default 5
