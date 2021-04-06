@@ -27,7 +27,7 @@ test('Should respond with a 503 once the threshold has been reached', t => {
   fastify.after(() => {
     opts.preHandler = fastify.circuitBreaker()
     fastify.get('/', opts, (req, reply) => {
-      t.is(typeof req._cbTime, 'number')
+      t.equal(typeof req._cbTime, 'number')
       setTimeout(() => {
         reply.send(
           req.query.error ? new Error('kaboom') : { hello: 'world' }
@@ -38,8 +38,8 @@ test('Should respond with a 503 once the threshold has been reached', t => {
 
   fastify.inject('/?error=true', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 500)
-    t.deepEqual({
+    t.equal(res.statusCode, 500)
+    t.same({
       error: 'Internal Server Error',
       message: 'kaboom',
       statusCode: 500
@@ -48,8 +48,8 @@ test('Should respond with a 503 once the threshold has been reached', t => {
 
   fastify.inject('/?error=true', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 500)
-    t.deepEqual({
+    t.equal(res.statusCode, 500)
+    t.same({
       error: 'Internal Server Error',
       message: 'kaboom',
       statusCode: 500
@@ -58,8 +58,8 @@ test('Should respond with a 503 once the threshold has been reached', t => {
 
   fastify.inject('/?error=true', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 503)
-    t.deepEqual({
+    t.equal(res.statusCode, 503)
+    t.same({
       error: 'Service Unavailable',
       message: 'Circuit open',
       statusCode: 503
@@ -80,7 +80,7 @@ test('Should respond with a 503 once the threshold has been reached (timeout)', 
   fastify.after(() => {
     opts.preHandler = fastify.circuitBreaker()
     fastify.get('/', opts, (req, reply) => {
-      t.is(typeof req._cbTime, 'number')
+      t.equal(typeof req._cbTime, 'number')
       setTimeout(() => {
         reply.send(
           req.query.error ? new Error('kaboom') : { hello: 'world' }
@@ -91,8 +91,8 @@ test('Should respond with a 503 once the threshold has been reached (timeout)', 
 
   fastify.inject('/?error=false&delay=100', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 503)
-    t.deepEqual({
+    t.equal(res.statusCode, 503)
+    t.same({
       error: 'Service Unavailable',
       message: 'Timeout',
       statusCode: 503
@@ -101,8 +101,8 @@ test('Should respond with a 503 once the threshold has been reached (timeout)', 
 
   fastify.inject('/?error=false&delay=100', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 503)
-    t.deepEqual({
+    t.equal(res.statusCode, 503)
+    t.same({
       error: 'Service Unavailable',
       message: 'Timeout',
       statusCode: 503
@@ -111,8 +111,8 @@ test('Should respond with a 503 once the threshold has been reached (timeout)', 
 
   fastify.inject('/?error=false&delay=100', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 503)
-    t.deepEqual({
+    t.equal(res.statusCode, 503)
+    t.same({
       error: 'Service Unavailable',
       message: 'Timeout',
       statusCode: 503
@@ -122,8 +122,8 @@ test('Should respond with a 503 once the threshold has been reached (timeout)', 
   setTimeout(() => {
     fastify.inject('/?error=false&delay=100', (err, res) => {
       t.error(err)
-      t.strictEqual(res.statusCode, 503)
-      t.deepEqual({
+      t.equal(res.statusCode, 503)
+      t.same({
         error: 'Service Unavailable',
         message: 'Circuit open',
         statusCode: 503
@@ -145,7 +145,7 @@ test('Should return 503 until the circuit is open', t => {
   fastify.after(() => {
     opts.preHandler = fastify.circuitBreaker()
     fastify.get('/', opts, (req, reply) => {
-      t.is(typeof req._cbTime, 'number')
+      t.equal(typeof req._cbTime, 'number')
       setTimeout(() => {
         reply.send(
           req.query.error ? new Error('kaboom') : { hello: 'world' }
@@ -156,8 +156,8 @@ test('Should return 503 until the circuit is open', t => {
 
   fastify.inject('/?error=true', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 500)
-    t.deepEqual({
+    t.equal(res.statusCode, 500)
+    t.same({
       error: 'Internal Server Error',
       message: 'kaboom',
       statusCode: 500
@@ -166,8 +166,8 @@ test('Should return 503 until the circuit is open', t => {
 
   fastify.inject('/?error=true', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 503)
-    t.deepEqual({
+    t.equal(res.statusCode, 503)
+    t.same({
       error: 'Service Unavailable',
       message: 'Circuit open',
       statusCode: 503
@@ -177,8 +177,8 @@ test('Should return 503 until the circuit is open', t => {
   setTimeout(() => {
     fastify.inject('/?error=false', (err, res) => {
       t.error(err)
-      t.strictEqual(res.statusCode, 200)
-      t.deepEqual({ hello: 'world' }, JSON.parse(res.payload))
+      t.equal(res.statusCode, 200)
+      t.same({ hello: 'world' }, JSON.parse(res.payload))
     })
   }, 1000)
 })
@@ -196,7 +196,7 @@ test('If the staus is half-open and there is an error the state should be open a
   fastify.after(() => {
     opts.preHandler = fastify.circuitBreaker()
     fastify.get('/', opts, (req, reply) => {
-      t.is(typeof req._cbTime, 'number')
+      t.equal(typeof req._cbTime, 'number')
       setTimeout(() => {
         reply.send(
           req.query.error ? new Error('kaboom') : { hello: 'world' }
@@ -207,8 +207,8 @@ test('If the staus is half-open and there is an error the state should be open a
 
   fastify.inject('/?error=true', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 500)
-    t.deepEqual({
+    t.equal(res.statusCode, 500)
+    t.same({
       error: 'Internal Server Error',
       message: 'kaboom',
       statusCode: 500
@@ -217,8 +217,8 @@ test('If the staus is half-open and there is an error the state should be open a
 
   fastify.inject('/?error=true', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 503)
-    t.deepEqual({
+    t.equal(res.statusCode, 503)
+    t.same({
       error: 'Service Unavailable',
       message: 'Circuit open',
       statusCode: 503
@@ -228,8 +228,8 @@ test('If the staus is half-open and there is an error the state should be open a
   setTimeout(() => {
     fastify.inject('/?error=true', (err, res) => {
       t.error(err)
-      t.strictEqual(res.statusCode, 500)
-      t.deepEqual({
+      t.equal(res.statusCode, 500)
+      t.same({
         error: 'Internal Server Error',
         message: 'kaboom',
         statusCode: 500
@@ -238,8 +238,8 @@ test('If the staus is half-open and there is an error the state should be open a
 
     fastify.inject('/?error=true', (err, res) => {
       t.error(err)
-      t.strictEqual(res.statusCode, 503)
-      t.deepEqual({
+      t.equal(res.statusCode, 503)
+      t.same({
         error: 'Service Unavailable',
         message: 'Circuit open',
         statusCode: 503
@@ -260,7 +260,7 @@ test('Should customize circuit open error message', t => {
   fastify.after(() => {
     opts.preHandler = fastify.circuitBreaker()
     fastify.get('/', opts, (req, reply) => {
-      t.is(typeof req._cbTime, 'number')
+      t.equal(typeof req._cbTime, 'number')
       setTimeout(() => {
         reply.send(
           req.query.error ? new Error('kaboom') : { hello: 'world' }
@@ -271,8 +271,8 @@ test('Should customize circuit open error message', t => {
 
   fastify.inject('/?error=true', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 503)
-    t.deepEqual({
+    t.equal(res.statusCode, 503)
+    t.same({
       error: 'Service Unavailable',
       message: 'Oh gosh!',
       statusCode: 503
@@ -293,7 +293,7 @@ test('Should customize timeout error message', t => {
   fastify.after(() => {
     opts.preHandler = fastify.circuitBreaker()
     fastify.get('/', opts, (req, reply) => {
-      t.is(typeof req._cbTime, 'number')
+      t.equal(typeof req._cbTime, 'number')
       setTimeout(() => {
         reply.send(
           req.query.error ? new Error('kaboom') : { hello: 'world' }
@@ -304,8 +304,8 @@ test('Should customize timeout error message', t => {
 
   fastify.inject('/?error=true&delay=200', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 503)
-    t.deepEqual({
+    t.equal(res.statusCode, 503)
+    t.same({
       error: 'Service Unavailable',
       message: 'Oh gosh!',
       statusCode: 503
@@ -324,7 +324,7 @@ test('One route should not interfere with others', t => {
   fastify.after(() => {
     opts.preHandler = fastify.circuitBreaker()
     fastify.get('/', opts, (req, reply) => {
-      t.is(typeof req._cbTime, 'number')
+      t.equal(typeof req._cbTime, 'number')
       setTimeout(() => {
         reply.send(
           req.query.error ? new Error('kaboom') : { hello: 'world' }
@@ -340,8 +340,8 @@ test('One route should not interfere with others', t => {
 
   fastify.inject('/?error=true', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 503)
-    t.deepEqual({
+    t.equal(res.statusCode, 503)
+    t.same({
       error: 'Service Unavailable',
       message: 'Circuit open',
       statusCode: 503
@@ -350,8 +350,8 @@ test('One route should not interfere with others', t => {
 
   fastify.inject('/other', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 200)
-    t.deepEqual({ hello: 'world' }, JSON.parse(res.payload))
+    t.equal(res.statusCode, 200)
+    t.same({ hello: 'world' }, JSON.parse(res.payload))
   })
 })
 
@@ -366,7 +366,7 @@ test('Custom options should overwrite the globals', t => {
   fastify.after(() => {
     opts.preHandler = fastify.circuitBreaker({ threshold: 2 })
     fastify.get('/', opts, (req, reply) => {
-      t.is(typeof req._cbTime, 'number')
+      t.equal(typeof req._cbTime, 'number')
       setTimeout(() => {
         reply.send(
           req.query.error ? new Error('kaboom') : { hello: 'world' }
@@ -377,8 +377,8 @@ test('Custom options should overwrite the globals', t => {
 
   fastify.inject('/?error=true', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 500)
-    t.deepEqual({
+    t.equal(res.statusCode, 500)
+    t.same({
       error: 'Internal Server Error',
       message: 'kaboom',
       statusCode: 500
@@ -405,8 +405,8 @@ test('Should handle also errors with statusCode property', t => {
 
   fastify.inject('/', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 501)
-    t.deepEqual({
+    t.equal(res.statusCode, 501)
+    t.same({
       error: 'Not Implemented',
       message: 'kaboom',
       statusCode: 501
@@ -415,8 +415,8 @@ test('Should handle also errors with statusCode property', t => {
 
   fastify.inject('/', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 503)
-    t.deepEqual({
+    t.equal(res.statusCode, 503)
+    t.same({
       error: 'Service Unavailable',
       message: 'Circuit open',
       statusCode: 503
@@ -442,14 +442,14 @@ test('If a route is not under the circuit breaker, _cbRouteId should always be e
 
   fastify.inject('/first', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 200)
-    t.deepEqual({ hello: 'world' }, JSON.parse(res.payload))
+    t.equal(res.statusCode, 200)
+    t.same({ hello: 'world' }, JSON.parse(res.payload))
   })
 
   fastify.inject('/second', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 200)
-    t.deepEqual({ hello: 'world' }, JSON.parse(res.payload))
+    t.equal(res.statusCode, 200)
+    t.same({ hello: 'world' }, JSON.parse(res.payload))
   })
 })
 
@@ -476,8 +476,8 @@ test('Should work only if the status code is >= 500', t => {
 
   fastify.inject('/first', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 400)
-    t.deepEqual({
+    t.equal(res.statusCode, 400)
+    t.same({
       error: 'Bad Request',
       message: 'kaboom',
       statusCode: 400
@@ -486,8 +486,8 @@ test('Should work only if the status code is >= 500', t => {
 
   fastify.inject('/second', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 400)
-    t.deepEqual({
+    t.equal(res.statusCode, 400)
+    t.same({
       error: 'Bad Request',
       message: 'kaboom',
       statusCode: 400
@@ -515,8 +515,8 @@ test('Should call onCircuitOpen when the threshold has been reached', t => {
 
   fastify.inject('/', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 500)
-    t.deepEqual({
+    t.equal(res.statusCode, 500)
+    t.same({
       error: 'Internal Server Error',
       message: 'kaboom',
       statusCode: 500
@@ -525,8 +525,8 @@ test('Should call onCircuitOpen when the threshold has been reached', t => {
 
   fastify.inject('/', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 503)
-    t.deepEqual({
+    t.equal(res.statusCode, 503)
+    t.same({
       message: 'hi'
     }, JSON.parse(res.payload))
   })
@@ -554,8 +554,8 @@ test('Should call onTimeout when the timeout has been reached', t => {
 
   fastify.inject('/', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 504)
-    t.strictEqual(res.payload, 'timed out')
+    t.equal(res.statusCode, 504)
+    t.equal(res.payload, 'timed out')
   })
 })
 
@@ -579,8 +579,8 @@ test('onCircuitOpen will handle a thrown error', t => {
 
   fastify.inject('/', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 500)
-    t.deepEqual({
+    t.equal(res.statusCode, 500)
+    t.same({
       error: 'Internal Server Error',
       message: 'kaboom',
       statusCode: 500
@@ -589,8 +589,8 @@ test('onCircuitOpen will handle a thrown error', t => {
 
   fastify.inject('/', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 503)
-    t.deepEqual({
+    t.equal(res.statusCode, 503)
+    t.same({
       error: 'Service Unavailable',
       message: 'circuit open',
       statusCode: 503
@@ -620,7 +620,7 @@ test('onTimeout will handle a thrown error', t => {
 
   fastify.inject('/', (err, res) => {
     t.error(err)
-    t.deepEqual({
+    t.same({
       error: 'Gateway Timeout',
       message: 'timed out',
       statusCode: 504
@@ -649,8 +649,8 @@ test('onCircuitOpen can be an async function', t => {
 
   fastify.inject('/', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 500)
-    t.deepEqual({
+    t.equal(res.statusCode, 500)
+    t.same({
       error: 'Internal Server Error',
       message: 'kaboom',
       statusCode: 500
@@ -659,8 +659,8 @@ test('onCircuitOpen can be an async function', t => {
 
   fastify.inject('/', (err, res) => {
     t.error(err)
-    t.strictEqual(res.statusCode, 503)
-    t.deepEqual({
+    t.equal(res.statusCode, 503)
+    t.same({
       error: 'Service Unavailable',
       message: 'circuit open',
       statusCode: 503
@@ -691,7 +691,7 @@ test('onTimeout can be an async function', t => {
 
   fastify.inject('/', (err, res) => {
     t.error(err)
-    t.deepEqual({
+    t.same({
       error: 'Gateway Timeout',
       message: 'timed out',
       statusCode: 504
