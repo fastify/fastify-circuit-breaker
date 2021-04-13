@@ -15,7 +15,7 @@ npm i fastify-circuit-breaker
 ```
 
 ## Usage
-Register the plugin and if needed pass to it some custom option.<br>
+Register the plugin and, if needed, pass it custom options.<br>
 This plugin will add an `onSend` hook and expose a `circuitBreaker` utility.<br>
 Call `fastify.circuitBreaker()` when declaring the `preHandler` option of a route, in this way you will put that very specific route under the *circuit breaking* check.
 ```js
@@ -52,7 +52,7 @@ fastify.listen(3000, err => {
 ```
 
 ### Options
-You can pass the following options during the plugin registration, in this way that values will be used in all the routes.
+You can pass the following options during the plugin registration, in this way the values will be used in all routes.
 ```js
 fastify.register(require('fastify-circuit-breaker'), {
   threshold: 3, // default 5
@@ -68,7 +68,7 @@ fastify.register(require('fastify-circuit-breaker'), {
   }
 })
 ```
-- `threshold`: is the maximum numbers of failures you accept to have before opening the circuit.
+- `threshold`: is the maximum number of failures accepted before opening the circuit.
 - `timeout:` is the maximum number of milliseconds you can wait before return a `TimeoutError`.
 - `resetTimeout`: number of milliseconds before the circuit will move from `open` to `half-open`
 - `onCircuitOpen`: async function that gets called when the circuit is `open` due to errors. It can modify the reply and return a `string` | `Buffer` | `Stream` payload.  If an `Error` is thrown it will be routed to your error handler. 
@@ -94,9 +94,9 @@ fastify.register(require('fastify-circuit-breaker'), {
 ```
 
 ## Caveats
-Since it is not possible to apply the classic timeout feature of the pattern, in this case the timeout will measure the time that the route takes to execute and **once the route has finished** if the time taken is higher than the timeout we will return an error, even if the route has produced a successful response.
+Since it is not possible to apply the classic timeout feature of the pattern, in this case the timeout will measure the time that the route takes to execute and **once the route has finished** if the time taken is higher than the timeout it will return an error, even if the route has produced a successful response.
 
-If you need a classic circuit breaker to wrap some API call inside your application consider using [`easy-breaker`](https://github.com/delvedor/easy-breaker).
+If you need a classic circuit breaker to wrap around an API call consider using [`easy-breaker`](https://github.com/delvedor/easy-breaker).
 
 ## Acknowledgements
 Image curtesy of [Martin Fowler](https://martinfowler.com/bliki/CircuitBreaker.html).
