@@ -29,7 +29,7 @@
     "husky": "^6.0.0",
     "standard": "^16.0.3",
     "tap": "^15.0.2",
-    "tsd": "^0.14.0"
+    "tsd": "^0.15.0"
   },
   "dependencies": {
     "fastify-plugin": "^3.0.0",
