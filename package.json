@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "fastify-plugin": "^3.0.0",
-    "tiny-lru": "^7.0.6"
+    "tiny-lru": "^8.0.1"
   },
   "bugs": {
     "url": "https://github.com/fastify/fastify-circuit-breaker/issues"
