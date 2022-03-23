@@ -57,7 +57,7 @@ You can pass the following options during the plugin registration, in this way t
 fastify.register(require('fastify-circuit-breaker'), {
   threshold: 3, // default 5
   timeout: 5000, // default 10000
-  resetTimeout: 5000 // default 10000
+  resetTimeout: 5000, // default 10000
   onCircuitOpen: async (req, reply) => {
     reply.statusCode = 500
     throw new Error('a custom error')
