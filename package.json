@@ -1,6 +1,6 @@
 {
-  "name": "fastify-circuit-breaker",
-  "version": "1.1.0",
+  "name": "@fastify/circuit-breaker",
+  "version": "2.0.0",
   "description": "A low overhead circuit breaker for your routes",
   "main": "index.js",
   "types": "index.d.ts",
@@ -43,5 +43,8 @@
     "hooks": {
       "pre-commit": "npm test"
     }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
