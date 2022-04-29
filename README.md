@@ -1,9 +1,9 @@
 <img align="right" width="350" height="auto" src="https://martinfowler.com/bliki/images/circuitBreaker/state.png">
 
-# fastify-circuit-breaker
+# @fastify/circuit-breaker
 
 ![CI](https://github.com/fastify/fastify-circuit-breaker/workflows/CI/badge.svg)
-[![NPM version](https://img.shields.io/npm/v/fastify-circuit-breaker.svg?style=flat)](https://www.npmjs.com/package/fastify-circuit-breaker)
+[![NPM version](https://img.shields.io/npm/v/@fastify/circuit-breaker.svg?style=flat)](https://www.npmjs.com/package/@fastify/circuit-breaker)
 [![Known Vulnerabilities](https://snyk.io/test/github/fastify/fastify-circuit-breaker/badge.svg)](https://snyk.io/test/github/fastify/fastify-circuit-breaker)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://standardjs.com/)
 
@@ -11,7 +11,7 @@ A low overhead [circuit breaker](https://martinfowler.com/bliki/CircuitBreaker.h
 
 ## Install
 ```
-npm i fastify-circuit-breaker
+npm i @fastify/circuit-breaker
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ Call `fastify.circuitBreaker()` when declaring the `preHandler` option of a rout
 ```js
 const fastify = require('fastify')()
 
-fastify.register(require('fastify-circuit-breaker'))
+fastify.register(require('@fastify/circuit-breaker'))
 
 fastify.register(function (instance, opts, next) {
   instance.route({
@@ -54,7 +54,7 @@ fastify.listen(3000, err => {
 ### Options
 You can pass the following options during the plugin registration, in this way the values will be used in all routes.
 ```js
-fastify.register(require('fastify-circuit-breaker'), {
+fastify.register(require('@fastify/circuit-breaker'), {
   threshold: 3, // default 5
   timeout: 5000, // default 10000
   resetTimeout: 5000, // default 10000
@@ -87,7 +87,7 @@ If you pass the options directly to the utility, it will take precedence over th
 ### Customize error messages
 If needed you can change the default error message for the *circuit open error* and the *timeout error*:
 ```js
-fastify.register(require('fastify-circuit-breaker'), {
+fastify.register(require('@fastify/circuit-breaker'), {
   timeoutErrorMessage: 'Ronf...', // default 'Timeout'
   circuitOpenErrorMessage: 'Oh gosh!' // default 'Circuit open'
 })
