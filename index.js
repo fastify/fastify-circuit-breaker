@@ -166,6 +166,6 @@ function circuitBreakerPlugin (fastify, opts, next) {
 }
 
 module.exports = fp(circuitBreakerPlugin, {
-  fastify: '>=3.x',
-  name: 'fastify-circuit-breaker'
+  fastify: '4.x',
+  name: '@fastify/circuit-breaker'
 })
