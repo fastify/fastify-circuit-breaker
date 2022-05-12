@@ -52,7 +52,7 @@ function circuitBreakerPlugin (fastify, opts, next) {
             const errorPayload = await route.onCircuitOpen(req, reply)
             return reply.send(errorPayload)
           } catch (error) {
-            return reply.send(error)
+            throw error
           }
         }
 
@@ -66,11 +66,11 @@ function circuitBreakerPlugin (fastify, opts, next) {
             const errorPayload = await route.onCircuitOpen(req, reply)
             return reply.send(errorPayload)
           } catch (error) {
-            return reply.send(error)
+            throw error
           }
         }
 
-        return reply.send(new CircuitOpenError())
+        throw new CircuitOpenError()
       }
 
       route.currentlyRunningRequest++
@@ -97,7 +97,9 @@ function circuitBreakerPlugin (fastify, opts, next) {
         return errorPayload
       }
 
-      throw new TimeoutError()
+      const err = new TimeoutError()
+      reply.code(err.statusCode)
+      throw err
     }
 
     if (reply.raw.statusCode < 500) {
@@ -121,7 +123,9 @@ function circuitBreakerPlugin (fastify, opts, next) {
         return errorPayload
       }
 
-      throw new CircuitOpenError()
+      const err = new CircuitOpenError()
+      reply.code(err.statusCode)
+      throw err
     }
   }
 
