@@ -48,12 +48,8 @@ function circuitBreakerPlugin (fastify, opts, next) {
       if (route.status === OPEN) {
         req._cbIsOpen = true
         if (route.onCircuitOpen) {
-          try {
-            const errorPayload = await route.onCircuitOpen(req, reply)
-            return reply.send(errorPayload)
-          } catch (error) {
-            throw error
-          }
+          const errorPayload = await route.onCircuitOpen(req, reply)
+          return reply.send(errorPayload)
         }
 
         return reply.send(new CircuitOpenError())
@@ -62,12 +58,8 @@ function circuitBreakerPlugin (fastify, opts, next) {
       if (route.status === HALFOPEN && route.currentlyRunningRequest >= 1) {
         req._cbIsOpen = true
         if (route.onCircuitOpen) {
-          try {
-            const errorPayload = await route.onCircuitOpen(req, reply)
-            return reply.send(errorPayload)
-          } catch (error) {
-            throw error
-          }
+          const errorPayload = await route.onCircuitOpen(req, reply)
+          return reply.send(errorPayload)
         }
 
         throw new CircuitOpenError()
