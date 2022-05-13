@@ -4,7 +4,6 @@
 
 ![CI](https://github.com/fastify/fastify-circuit-breaker/workflows/CI/badge.svg)
 [![NPM version](https://img.shields.io/npm/v/@fastify/circuit-breaker.svg?style=flat)](https://www.npmjs.com/package/@fastify/circuit-breaker)
-[![Known Vulnerabilities](https://snyk.io/test/github/fastify/fastify-circuit-breaker/badge.svg)](https://snyk.io/test/github/fastify/fastify-circuit-breaker)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://standardjs.com/)
 
 A low overhead [circuit breaker](https://martinfowler.com/bliki/CircuitBreaker.html) for your routes.
