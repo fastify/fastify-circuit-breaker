@@ -48,12 +48,8 @@ function circuitBreakerPlugin (fastify, opts, next) {
       if (route.status === OPEN) {
         req._cbIsOpen = true
         if (route.onCircuitOpen) {
-          try {
-            const errorPayload = await route.onCircuitOpen(req, reply)
-            return reply.send(errorPayload)
-          } catch (error) {
-            return reply.send(error)
-          }
+          const errorPayload = await route.onCircuitOpen(req, reply)
+          return reply.send(errorPayload)
         }
 
         return reply.send(new CircuitOpenError())
@@ -62,15 +58,11 @@ function circuitBreakerPlugin (fastify, opts, next) {
       if (route.status === HALFOPEN && route.currentlyRunningRequest >= 1) {
         req._cbIsOpen = true
         if (route.onCircuitOpen) {
-          try {
-            const errorPayload = await route.onCircuitOpen(req, reply)
-            return reply.send(errorPayload)
-          } catch (error) {
-            return reply.send(error)
-          }
+          const errorPayload = await route.onCircuitOpen(req, reply)
+          return reply.send(errorPayload)
         }
 
-        return reply.send(new CircuitOpenError())
+        throw new CircuitOpenError()
       }
 
       route.currentlyRunningRequest++
@@ -97,7 +89,9 @@ function circuitBreakerPlugin (fastify, opts, next) {
         return errorPayload
       }
 
-      throw new TimeoutError()
+      const err = new TimeoutError()
+      reply.code(err.statusCode)
+      throw err
     }
 
     if (reply.raw.statusCode < 500) {
@@ -121,7 +115,9 @@ function circuitBreakerPlugin (fastify, opts, next) {
         return errorPayload
       }
 
-      throw new CircuitOpenError()
+      const err = new CircuitOpenError()
+      reply.code(err.statusCode)
+      throw err
     }
   }
 
@@ -162,6 +158,6 @@ function circuitBreakerPlugin (fastify, opts, next) {
 }
 
 module.exports = fp(circuitBreakerPlugin, {
-  fastify: '>=3.x',
-  name: 'fastify-circuit-breaker'
+  fastify: '4.x',
+  name: '@fastify/circuit-breaker'
 })
