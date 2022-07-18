@@ -32,7 +32,7 @@
     "tsd": "^0.22.0"
   },
   "dependencies": {
-    "fastify-plugin": "^3.0.0",
+    "fastify-plugin": "^4.0.0",
     "tiny-lru": "^8.0.1"
   },
   "bugs": {
