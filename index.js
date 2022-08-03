@@ -4,9 +4,9 @@ const fp = require('fastify-plugin')
 const lru = require('tiny-lru')
 const createError = require('@fastify/error')
 
-const OPEN = 'open'
-const HALFOPEN = 'half-open'
-const CLOSE = 'close'
+const OPEN = Symbol('open')
+const HALFOPEN = Symbol('half-open')
+const CLOSE = Symbol('close')
 
 function circuitBreakerPlugin (fastify, opts, next) {
   opts = opts || {}
