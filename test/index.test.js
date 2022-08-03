@@ -3,7 +3,7 @@
 const t = require('tap')
 const test = t.test
 const Fastify = require('fastify')
-const circuitBreaker = require('./index')
+const circuitBreaker = require('..')
 
 const opts = {
   schema: {
@@ -62,7 +62,8 @@ test('Should respond with a 503 once the threshold has been reached', t => {
     t.same({
       error: 'Service Unavailable',
       message: 'Circuit open',
-      statusCode: 503
+      statusCode: 503,
+      code: 'FST_ERR_CIRCUIT_BREAKER_OPEN'
     }, JSON.parse(res.payload))
   })
 })
@@ -95,7 +96,8 @@ test('Should respond with a 503 once the threshold has been reached (timeout)', 
     t.same({
       error: 'Service Unavailable',
       message: 'Timeout',
-      statusCode: 503
+      statusCode: 503,
+      code: 'FST_ERR_CIRCUIT_BREAKER_TIMEOUT'
     }, JSON.parse(res.payload))
   })
 
@@ -105,7 +107,8 @@ test('Should respond with a 503 once the threshold has been reached (timeout)', 
     t.same({
       error: 'Service Unavailable',
       message: 'Timeout',
-      statusCode: 503
+      statusCode: 503,
+      code: 'FST_ERR_CIRCUIT_BREAKER_TIMEOUT'
     }, JSON.parse(res.payload))
   })
 
@@ -115,7 +118,8 @@ test('Should respond with a 503 once the threshold has been reached (timeout)', 
     t.same({
       error: 'Service Unavailable',
       message: 'Timeout',
-      statusCode: 503
+      statusCode: 503,
+      code: 'FST_ERR_CIRCUIT_BREAKER_TIMEOUT'
     }, JSON.parse(res.payload))
   })
 
@@ -126,7 +130,8 @@ test('Should respond with a 503 once the threshold has been reached (timeout)', 
       t.same({
         error: 'Service Unavailable',
         message: 'Circuit open',
-        statusCode: 503
+        statusCode: 503,
+        code: 'FST_ERR_CIRCUIT_BREAKER_OPEN'
       }, JSON.parse(res.payload))
     })
   }, 200)
@@ -170,7 +175,8 @@ test('Should return 503 until the circuit is open', t => {
     t.same({
       error: 'Service Unavailable',
       message: 'Circuit open',
-      statusCode: 503
+      statusCode: 503,
+      code: 'FST_ERR_CIRCUIT_BREAKER_OPEN'
     }, JSON.parse(res.payload))
   })
 
@@ -221,7 +227,8 @@ test('If the staus is half-open and there is an error the state should be open a
     t.same({
       error: 'Service Unavailable',
       message: 'Circuit open',
-      statusCode: 503
+      statusCode: 503,
+      code: 'FST_ERR_CIRCUIT_BREAKER_OPEN'
     }, JSON.parse(res.payload))
   })
 
@@ -242,7 +249,8 @@ test('If the staus is half-open and there is an error the state should be open a
       t.same({
         error: 'Service Unavailable',
         message: 'Circuit open',
-        statusCode: 503
+        statusCode: 503,
+        code: 'FST_ERR_CIRCUIT_BREAKER_OPEN'
       }, JSON.parse(res.payload))
     })
   }, 1000)
@@ -275,7 +283,8 @@ test('Should customize circuit open error message', t => {
     t.same({
       error: 'Service Unavailable',
       message: 'Oh gosh!',
-      statusCode: 503
+      statusCode: 503,
+      code: 'FST_ERR_CIRCUIT_BREAKER_OPEN'
     }, JSON.parse(res.payload))
   })
 })
@@ -308,7 +317,8 @@ test('Should customize timeout error message', t => {
     t.same({
       error: 'Service Unavailable',
       message: 'Oh gosh!',
-      statusCode: 503
+      statusCode: 503,
+      code: 'FST_ERR_CIRCUIT_BREAKER_TIMEOUT'
     }, JSON.parse(res.payload))
   })
 })
@@ -344,7 +354,8 @@ test('One route should not interfere with others', t => {
     t.same({
       error: 'Service Unavailable',
       message: 'Circuit open',
-      statusCode: 503
+      statusCode: 503,
+      code: 'FST_ERR_CIRCUIT_BREAKER_OPEN'
     }, JSON.parse(res.payload))
   })
 
@@ -419,7 +430,8 @@ test('Should handle also errors with statusCode property', t => {
     t.same({
       error: 'Service Unavailable',
       message: 'Circuit open',
-      statusCode: 503
+      statusCode: 503,
+      code: 'FST_ERR_CIRCUIT_BREAKER_OPEN'
     }, JSON.parse(res.payload))
   })
 })

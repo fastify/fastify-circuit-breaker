@@ -3,11 +3,13 @@
   "version": "3.0.0",
   "description": "A low overhead circuit breaker for your routes",
   "main": "index.js",
-  "types": "index.d.ts",
+  "types": "types/index.d.ts",
   "type": "commonjs",
   "scripts": {
-    "test": "standard && tap -j4 test.js && npm run typescript",
-    "typescript": "tsd"
+    "lint": "standard",
+    "test": "npm run test:unit && npm run test:typescript",
+    "test:unit": "tap",
+    "test:typescript": "tsd"
   },
   "repository": {
     "type": "git",
@@ -32,6 +34,7 @@
     "tsd": "^0.22.0"
   },
   "dependencies": {
+    "@fastify/error": "^3.0.0",
     "fastify-plugin": "^4.0.0",
     "tiny-lru": "^8.0.1"
   },

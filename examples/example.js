@@ -2,7 +2,7 @@
 
 const fastify = require('fastify')()
 
-fastify.register(require('./index'), {
+fastify.register(require('..'), {
   threshold: 3,
   timeout: 5000,
   resetTimeout: 5000
