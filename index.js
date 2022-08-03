@@ -1,8 +1,8 @@
 'use strict'
 
-const inherits = require('util').inherits
 const fp = require('fastify-plugin')
 const lru = require('tiny-lru')
+const createError = require('@fastify/error')
 
 const OPEN = 'open'
 const HALFOPEN = 'half-open'
@@ -131,25 +131,17 @@ function circuitBreakerPlugin (fastify, opts, next) {
     }, route.resetTimeout)
   }
 
-  function TimeoutError (message) {
-    Error.call(this)
-    Error.captureStackTrace(this, TimeoutError)
-    this.name = 'TimeoutError'
-    this.message = timeoutErrorMessage
-    this.statusCode = 503
-  }
+  const TimeoutError = createError(
+    'FST_ERR_CIRCUIT_BREAKER_TIMEOUT',
+    timeoutErrorMessage,
+    503
+  )
 
-  inherits(TimeoutError, Error)
-
-  function CircuitOpenError (message) {
-    Error.call(this)
-    Error.captureStackTrace(this, CircuitOpenError)
-    this.name = 'CircuitOpenError'
-    this.message = circuitOpenErrorMessage
-    this.statusCode = 503
-  }
-
-  inherits(CircuitOpenError, Error)
+  const CircuitOpenError = createError(
+    'FST_ERR_CIRCUIT_BREAKER_OPEN',
+    circuitOpenErrorMessage,
+    503
+  )
 
   function getTime () {
     const ts = process.hrtime()
