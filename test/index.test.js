@@ -3,7 +3,7 @@
 const t = require('tap')
 const test = t.test
 const Fastify = require('fastify')
-const circuitBreaker = require('./index')
+const circuitBreaker = require('..')
 
 const opts = {
   schema: {
