@@ -1,5 +1,5 @@
 import {
-  FastifyPlugin,
+  FastifyPluginCallback,
   FastifyRequest,
   FastifyReply,
   HookHandlerDoneFunction,
@@ -40,6 +40,6 @@ export type FastifyCircuitBreakerOptions = {
   resetTimeout?: number;
 };
 
-export const fastifyCircuitBreaker: FastifyPlugin<FastifyCircuitBreakerOptions>;
+export const fastifyCircuitBreaker: FastifyPluginCallback<FastifyCircuitBreakerOptions>;
 
 export default fastifyCircuitBreaker;

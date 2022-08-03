@@ -1,5 +1,5 @@
 import fastify from "fastify";
-import FastifyCircuitBreaker, { FastifyCircuitBreakerOptions } from ".";
+import FastifyCircuitBreaker, { FastifyCircuitBreakerOptions } from "..";
 
 const app = fastify();
 
