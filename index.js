@@ -1,7 +1,7 @@
 'use strict'
 
 const fp = require('fastify-plugin')
-const lru = require('tiny-lru')
+const lru = require('tiny-lru').lru
 const createError = require('@fastify/error')
 
 const OPEN = Symbol('open')
