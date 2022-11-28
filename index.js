@@ -8,7 +8,7 @@ const OPEN = Symbol('open')
 const HALFOPEN = Symbol('half-open')
 const CLOSE = Symbol('close')
 
-function circuitBreakerPlugin (fastify, opts, next) {
+function fastifyCircuitBreaker (fastify, opts, next) {
   opts = opts || {}
   const timeout = opts.timeout || 1000 * 10
   const resetTimeout = opts.resetTimeout || 1000 * 10
@@ -149,7 +149,9 @@ function circuitBreakerPlugin (fastify, opts, next) {
   }
 }
 
-module.exports = fp(circuitBreakerPlugin, {
+module.exports = fp(fastifyCircuitBreaker, {
   fastify: '4.x',
   name: '@fastify/circuit-breaker'
 })
+module.exports.default = fastifyCircuitBreaker
+module.exports.fastifyCircuitBreaker = fastifyCircuitBreaker
