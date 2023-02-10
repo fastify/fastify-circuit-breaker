@@ -1,6 +1,6 @@
 {
   "name": "@fastify/circuit-breaker",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "A low overhead circuit breaker for your routes",
   "main": "index.js",
   "types": "types/index.d.ts",
