@@ -4,6 +4,7 @@ import {
   FastifyReply,
   HookHandlerDoneFunction,
 } from "fastify";
+import { Stream } from "node:stream";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -30,6 +31,7 @@ declare namespace fastifyCircuitBreaker {
      * @default 5
      */
     threshold?: number;
+  
     /**
      * The maximum number of milliseconds you can wait before return a `TimeoutError`.
      * @default 10000
@@ -41,6 +43,38 @@ declare namespace fastifyCircuitBreaker {
      * @default 10000
      */
     resetTimeout?: number;
+
+    /**
+     * Gets called when the circuit is `open` due to timeouts.
+     * It can modify the reply and return a `string` | `Buffer` | `Stream` |
+     * `Error` payload.  If an `Error` is thrown it will be routed to your error
+     * handler.
+     */
+    onTimeout?: (request: FastifyRequest, reply: FastifyReply) => void | string | Buffer | Stream | Error | Promise<void | string | Buffer | Stream | Error>;
+
+    /**
+     * 
+     * @default 'Timeout'
+     */
+    timeoutErrorMessage?: string;
+
+    /**
+     * Gets called when the circuit is `open` due to errors.
+     * It can modify the reply and return a `string` | `Buffer` | `Stream`
+     * payload. If an `Error` is thrown it will be routed to your error handler.
+     */
+    onCircuitOpen?: (request: FastifyRequest, reply: FastifyReply) => void | string | Buffer | Stream | Promise<void | string | Buffer | Stream>;
+
+    /**
+     * @default 'Circuit open'
+     */
+    circuitOpenErrorMessage?: string;
+
+    /**
+     * The amount of cached requests.
+     * @default 500
+     */
+    cache?: number;
   };
   export const fastifyCircuitBreaker: FastifyCircuitBreaker
   export { fastifyCircuitBreaker as default }
