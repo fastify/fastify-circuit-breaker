@@ -710,3 +710,113 @@ test('onTimeout can be an async function', t => {
     }, JSON.parse(res.payload))
   })
 })
+
+test('Should not throw error if no options is passed', t => {
+  t.plan(3)
+  const fastify = Fastify()
+  const fastify2 = Fastify()
+  const fastify3 = Fastify()
+  t.equal(circuitBreaker(fastify, undefined, () => {}), undefined)
+  t.equal(circuitBreaker(fastify2, null, () => {}), undefined)
+  t.equal(circuitBreaker(fastify3, {}, () => {}), undefined)
+})
+
+test('Should throw error on route status open and circuit open', t => {
+  t.plan(5)
+
+  const fastify = Fastify()
+  fastify.register(circuitBreaker, {
+    threshold: 1,
+    timeout: 1000,
+    resetTimeout: 1500,
+    onCircuitOpen: async (req, reply) => {
+      reply.statusCode = 500
+      return JSON.stringify({ err: 'custom error' })
+    }
+  })
+
+  fastify.after(() => {
+    fastify.get('/', { preHandler: fastify.circuitBreaker() }, (req, reply) => {
+      t.equal(typeof req._cbTime, 'number')
+      setTimeout(() => {
+        reply.send(new Error('kaboom'))
+      }, 0)
+    })
+  })
+
+  fastify.inject('/?error=true', (err, res) => {
+    t.error(err)
+  })
+
+  setTimeout(() => {
+    fastify.inject('/?error=false', (err, res) => {
+      t.equal(null, err)
+      t.equal(res.statusCode, 500)
+      t.same({ err: 'custom error' }, JSON.parse(res.payload))
+    })
+  }, 1000)
+})
+
+test('Should throw error on route status half open and circuit open', t => {
+  t.plan(15)
+
+  const fastify = Fastify()
+  fastify.register(circuitBreaker, {
+    threshold: 2,
+    timeout: 1000,
+    resetTimeout: 500,
+    onCircuitOpen: async (req, reply) => {
+      reply.statusCode = 500
+      return JSON.stringify({ err: 'custom error' })
+    }
+  })
+
+  fastify.after(() => {
+    opts.preHandler = fastify.circuitBreaker()
+
+    fastify.get('/', opts, (req, reply) => {
+      t.equal(typeof req._cbTime, 'number')
+      setTimeout(() => {
+        reply.send(new Error('kaboom'))
+      }, 0)
+    })
+  })
+
+  fastify.inject('/?error=true', (err, res) => {
+    t.error(err)
+    t.equal(res.statusCode, 500)
+    t.same({
+      error: 'Internal Server Error',
+      message: 'kaboom',
+      statusCode: 500
+    }, JSON.parse(res.payload))
+  })
+
+  fastify.inject('/?error=true', (err, res) => {
+    t.error(err)
+    t.equal(res.statusCode, 500)
+    t.same({
+      err: 'custom error'
+    }, JSON.parse(res.payload))
+  })
+
+  setTimeout(() => {
+    fastify.inject('/?error=true', (err, res) => {
+      t.error(err)
+      t.equal(res.statusCode, 500)
+      t.same({
+        error: 'Internal Server Error',
+        message: 'kaboom',
+        statusCode: 500
+      }, JSON.parse(res.payload))
+    })
+
+    fastify.inject('/?error=true', (err, res) => {
+      t.equal(null, err)
+      t.equal(res.statusCode, 500)
+      t.same({
+        err: 'custom error'
+      }, JSON.parse(res.payload))
+    })
+  }, 1000)
+})
