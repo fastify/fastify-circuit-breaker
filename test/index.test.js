@@ -752,7 +752,7 @@ test('Should throw error on route status open and circuit open', t => {
     fastify.inject('/?error=false', (err, res) => {
       t.equal(null, err)
       t.equal(res.statusCode, 500)
-      t.same({ err: 'custom error' }, JSON.parse(res.payload))
+      t.same(res.json(), { err: 'custom error' })
     })
   }, 1000)
 })
@@ -795,9 +795,7 @@ test('Should throw error on route status half open and circuit open', t => {
   fastify.inject('/?error=true', (err, res) => {
     t.error(err)
     t.equal(res.statusCode, 500)
-    t.same({
-      err: 'custom error'
-    }, JSON.parse(res.payload))
+    t.same(res.json(), { err: 'custom error' })
   })
 
   setTimeout(() => {
@@ -814,9 +812,7 @@ test('Should throw error on route status half open and circuit open', t => {
     fastify.inject('/?error=true', (err, res) => {
       t.equal(null, err)
       t.equal(res.statusCode, 500)
-      t.same({
-        err: 'custom error'
-      }, JSON.parse(res.payload))
+      t.same(res.json(), { err: 'custom error' })
     })
   }, 1000)
 })
