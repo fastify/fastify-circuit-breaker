@@ -1,7 +1,7 @@
 'use strict'
 
 const fp = require('fastify-plugin')
-const { LruObject } = require('toad-cache')
+const { FifoObject } = require('toad-cache')
 const createError = require('@fastify/error')
 
 const OPEN = Symbol('open')
@@ -17,7 +17,7 @@ function fastifyCircuitBreaker (fastify, opts, next) {
   const circuitOpenErrorMessage = opts.circuitOpenErrorMessage || 'Circuit open'
   const onCircuitOpen = opts.onCircuitOpen
   const onTimeout = opts.onTimeout
-  const cache = new LruObject(opts.cache || 500)
+  const cache = new FifoObject(opts.cache || 500)
 
   let routeId = 0
 
