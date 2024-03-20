@@ -26,16 +26,16 @@
   "author": "Tomas Della Vedova - @delvedor (http://delved.org)",
   "license": "MIT",
   "devDependencies": {
-    "@fastify/pre-commit": "^2.0.2",
-    "@types/node": "^20.1.0",
-    "fastify": "^4.0.0-rc.2",
-    "standard": "^17.0.0",
-    "tap": "^16.0.0",
-    "tsd": "^0.31.0"
+    "@fastify/pre-commit": "^2.1.0",
+    "@types/node": "^20.11.30",
+    "fastify": "^4.26.2",
+    "standard": "^17.1.0",
+    "tap": "^18.7.1",
+    "tsd": "^0.30.7"
   },
   "dependencies": {
-    "@fastify/error": "^4.0.0",
-    "fastify-plugin": "^4.0.0",
+    "@fastify/error": "^3.4.1",
+    "fastify-plugin": "^4.5.1",
     "toad-cache": "^3.7.0"
   },
   "bugs": {
