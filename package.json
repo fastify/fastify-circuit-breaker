@@ -27,7 +27,7 @@
   "license": "MIT",
   "devDependencies": {
     "@fastify/pre-commit": "^2.1.0",
-    "@types/node": "^20.11.30",
+    "@types/node": "^22.0.0",
     "fastify": "^5.0.0-alpha.2",
     "standard": "^17.1.0",
     "tap": "^20.0.1",
