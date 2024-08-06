@@ -150,7 +150,7 @@ function fastifyCircuitBreaker (fastify, opts, next) {
 }
 
 module.exports = fp(fastifyCircuitBreaker, {
-  fastify: '4.x',
+  fastify: '5.x',
   name: '@fastify/circuit-breaker'
 })
 module.exports.default = fastifyCircuitBreaker
