@@ -8,8 +8,11 @@ const circuitBreaker = require('..')
 const opts = {
   schema: {
     querystring: {
-      error: { type: 'boolean' },
-      delay: { type: 'integer' }
+      type: 'object',
+      properties: {
+        error: { type: 'boolean' },
+        delay: { type: 'integer' }
+      }
     }
   }
 }
