@@ -70,8 +70,8 @@ fastify.register(require('@fastify/circuit-breaker'), {
 - `threshold`: is the maximum number of failures accepted before opening the circuit.
 - `timeout:` is the maximum number of milliseconds you can wait before return a `TimeoutError`.
 - `resetTimeout`: number of milliseconds before the circuit will move from `open` to `half-open`
-- `onCircuitOpen`: async function that gets called when the circuit is `open` due to errors. It can modify the reply and return a `string` | `Buffer` | `Stream` payload.  If an `Error` is thrown it will be routed to your error handler. 
-- `onTimeout`: async function that gets called when the circuit is `open` due to timeouts.  It can modify the reply and return a `string` | `Buffer` | `Stream` | `Error` payload.  If an `Error` is thrown it will be routed to your error handler.  
+- `onCircuitOpen`: async function that gets called when the circuit is `open` due to errors. It can modify the reply and return a `string` | `Buffer` | `Stream` payload.  If an `Error` is thrown it will be routed to your error handler.
+- `onTimeout`: async function that gets called when the circuit is `open` due to timeouts.  It can modify the reply and return a `string` | `Buffer` | `Stream` | `Error` payload.  If an `Error` is thrown it will be routed to your error handler.
 
 Otherwise, you can customize every single route by passing the same options to the `circuitBreaker` utility:
 ```js
