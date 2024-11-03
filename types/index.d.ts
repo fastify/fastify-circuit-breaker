@@ -31,7 +31,7 @@ declare namespace fastifyCircuitBreaker {
      * @default 5
      */
     threshold?: number;
-  
+
     /**
      * The maximum number of milliseconds you can wait before return a `TimeoutError`.
      * @default 10000
@@ -53,7 +53,7 @@ declare namespace fastifyCircuitBreaker {
     onTimeout?: (request: FastifyRequest, reply: FastifyReply) => void | string | Buffer | Stream | Error | Promise<void | string | Buffer | Stream | Error>;
 
     /**
-     * 
+     *
      * @default 'Timeout'
      */
     timeoutErrorMessage?: string;
