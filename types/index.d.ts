@@ -3,10 +3,10 @@ import {
   FastifyRequest,
   FastifyReply,
   HookHandlerDoneFunction,
-} from "fastify";
-import { Stream } from "node:stream";
+} from 'fastify'
+import { Stream } from 'node:stream'
 
-declare module "fastify" {
+declare module 'fastify' {
   interface FastifyInstance {
     circuitBreaker(
       options?: fastifyCircuitBreaker.FastifyCircuitBreakerOptions
@@ -14,7 +14,7 @@ declare module "fastify" {
   }
 }
 
-type FastifyCircuitBreaker = FastifyPluginCallback<fastifyCircuitBreaker.FastifyCircuitBreakerOptions>;
+type FastifyCircuitBreaker = FastifyPluginCallback<fastifyCircuitBreaker.FastifyCircuitBreakerOptions>
 
 declare namespace fastifyCircuitBreaker {
   export interface FastifyCircuitBreakerBeforeHandler {
@@ -75,10 +75,10 @@ declare namespace fastifyCircuitBreaker {
      * @default 500
      */
     cache?: number;
-  };
+  }
   export const fastifyCircuitBreaker: FastifyCircuitBreaker
   export { fastifyCircuitBreaker as default }
 }
 
-declare function fastifyCircuitBreaker(...params: Parameters<FastifyCircuitBreaker>): ReturnType<FastifyCircuitBreaker>
+declare function fastifyCircuitBreaker (...params: Parameters<FastifyCircuitBreaker>): ReturnType<FastifyCircuitBreaker>
 export = fastifyCircuitBreaker
