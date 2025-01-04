@@ -71,7 +71,7 @@ function fastifyCircuitBreaker (fastify, opts, next) {
     }
   }
 
-  async function onSend (req, reply, payload) {
+  async function onSend (req, reply, _payload) {
     if (req._cbRouteId === 0 || req._cbIsOpen === true) {
       return
     }

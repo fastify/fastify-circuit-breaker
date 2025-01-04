@@ -8,7 +8,7 @@ fastify.register(require('..'), {
   resetTimeout: 5000
 })
 
-fastify.register(function (instance, opts, next) {
+fastify.register(function (instance, _opts, next) {
   instance.route({
     method: 'GET',
     url: '/',

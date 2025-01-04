@@ -27,7 +27,7 @@ app.get(
   {
     preHandler: app.circuitBreaker(),
   },
-  (req, reply) => { }
+  () => { }
 )
 
 app.register(FastifyCircuitBreaker, { timeoutErrorMessage: 'Timeon' })

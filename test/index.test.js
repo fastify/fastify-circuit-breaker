@@ -341,7 +341,7 @@ test('One route should not interfere with others', async t => {
     })
 
     const options = { beforeHandler: fastify.circuitBreaker() }
-    fastify.get('/other', options, (req, reply) => {
+    fastify.get('/other', options, (_req, reply) => {
       reply.send({ hello: 'world' })
     })
   })
@@ -402,7 +402,7 @@ test('Should handle also errors with statusCode property', async t => {
 
   fastify.after(() => {
     opts.preHandler = fastify.circuitBreaker()
-    fastify.get('/', opts, (req, reply) => {
+    fastify.get('/', opts, (_req, reply) => {
       const error = new Error('kaboom')
       error.statusCode = 501
       reply.send(error)
@@ -466,13 +466,13 @@ test('Should work only if the status code is >= 500', async t => {
 
   fastify.after(() => {
     opts.preHandler = fastify.circuitBreaker()
-    fastify.get('/first', opts, (req, reply) => {
+    fastify.get('/first', opts, (_req, reply) => {
       const error = new Error('kaboom')
       error.statusCode = 400
       reply.send(error)
     })
 
-    fastify.get('/second', opts, (req, reply) => {
+    fastify.get('/second', opts, (_req, reply) => {
       reply.code(400).send(new Error('kaboom'))
     })
   })
@@ -502,14 +502,14 @@ test('Should call onCircuitOpen when the threshold has been reached', async t =>
   const fastify = Fastify()
   fastify.register(circuitBreaker, {
     threshold: 2,
-    onCircuitOpen: (req, reply) => {
+    onCircuitOpen: (_req, reply) => {
       reply.statusCode = 503
       return JSON.stringify({ message: 'hi' })
     }
   })
 
   fastify.after(() => {
-    fastify.get('/', { preHandler: fastify.circuitBreaker() }, (req, reply) => {
+    fastify.get('/', { preHandler: fastify.circuitBreaker() }, (_req, reply) => {
       reply.send(new Error('kaboom'))
     })
   })
@@ -537,14 +537,14 @@ test('Should call onTimeout when the timeout has been reached', async t => {
   const fastify = Fastify()
   fastify.register(circuitBreaker, {
     timeout: 50,
-    onTimeout: (req, reply) => {
+    onTimeout: (_req, reply) => {
       reply.statusCode = 504
       return 'timed out'
     }
   })
 
   fastify.after(() => {
-    fastify.get('/', { preHandler: fastify.circuitBreaker() }, (req, reply) => {
+    fastify.get('/', { preHandler: fastify.circuitBreaker() }, (_req, reply) => {
       setTimeout(() => {
         reply.send({ hello: 'world' })
       }, 100)
@@ -563,14 +563,14 @@ test('onCircuitOpen will handle a thrown error', async t => {
   const fastify = Fastify()
   fastify.register(circuitBreaker, {
     threshold: 2,
-    onCircuitOpen: (req, reply) => {
+    onCircuitOpen: (_req, reply) => {
       reply.statusCode = 503
       throw new Error('circuit open')
     }
   })
 
   fastify.after(() => {
-    fastify.get('/', { preHandler: fastify.circuitBreaker() }, (req, reply) => {
+    fastify.get('/', { preHandler: fastify.circuitBreaker() }, (_req, reply) => {
       reply.send(new Error('kaboom'))
     })
   })
@@ -600,14 +600,14 @@ test('onTimeout will handle a thrown error', async t => {
   const fastify = Fastify()
   fastify.register(circuitBreaker, {
     timeout: 50,
-    onTimeout: (req, reply) => {
+    onTimeout: (_req, reply) => {
       reply.statusCode = 504
       throw new Error('timed out')
     }
   })
 
   fastify.after(() => {
-    fastify.get('/', { preHandler: fastify.circuitBreaker() }, (req, reply) => {
+    fastify.get('/', { preHandler: fastify.circuitBreaker() }, (_req, reply) => {
       setTimeout(() => {
         reply.send({ hello: 'world' })
       }, 100)
@@ -629,7 +629,7 @@ test('onCircuitOpen can be an async function', async t => {
   const fastify = Fastify()
   fastify.register(circuitBreaker, {
     threshold: 2,
-    onCircuitOpen: async (req, reply) => {
+    onCircuitOpen: async (_req, reply) => {
       const statusCode = await Promise.resolve(503)
       reply.statusCode = statusCode
       throw new Error('circuit open')
@@ -637,7 +637,7 @@ test('onCircuitOpen can be an async function', async t => {
   })
 
   fastify.after(() => {
-    fastify.get('/', { preHandler: fastify.circuitBreaker() }, (req, reply) => {
+    fastify.get('/', { preHandler: fastify.circuitBreaker() }, (_req, reply) => {
       reply.send(new Error('kaboom'))
     })
   })
@@ -667,7 +667,7 @@ test('onTimeout can be an async function', async t => {
   const fastify = Fastify()
   fastify.register(circuitBreaker, {
     timeout: 50,
-    onTimeout: async (req, reply) => {
+    onTimeout: async (_req, reply) => {
       const statusCode = await Promise.resolve(504)
       reply.statusCode = statusCode
       throw new Error('timed out')
@@ -675,7 +675,7 @@ test('onTimeout can be an async function', async t => {
   })
 
   fastify.after(() => {
-    fastify.get('/', { preHandler: fastify.circuitBreaker() }, (req, reply) => {
+    fastify.get('/', { preHandler: fastify.circuitBreaker() }, (_req, reply) => {
       setTimeout(() => {
         reply.send({ hello: 'world' })
       }, 100)
@@ -709,7 +709,7 @@ test('Should throw error on route status open and circuit open', async t => {
     threshold: 1,
     timeout: 1000,
     resetTimeout: 1500,
-    onCircuitOpen: async (req, reply) => {
+    onCircuitOpen: async (_req, reply) => {
       reply.statusCode = 500
       return JSON.stringify({ err: 'custom error' })
     }
@@ -742,7 +742,7 @@ test('Should throw error on route status half open and circuit open', async t =>
     threshold: 2,
     timeout: 1000,
     resetTimeout: 500,
-    onCircuitOpen: async (req, reply) => {
+    onCircuitOpen: async (_req, reply) => {
       reply.statusCode = 500
       return JSON.stringify({ err: 'custom error' })
     }
