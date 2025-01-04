@@ -65,7 +65,7 @@ fastify.listen({ port: 3000 }, err => {
 ```
 
 ### Options
-You can pass the following options during the plugin registration, in this way the values will be used in all routes.
+You can pass the following options during the plugin registration, this way the values will be used in all routes.
 ```js
 fastify.register(require('@fastify/circuit-breaker'), {
   threshold: 3, // default 5
@@ -81,8 +81,8 @@ fastify.register(require('@fastify/circuit-breaker'), {
   }
 })
 ```
-- `threshold`: is the maximum number of failures accepted before opening the circuit.
-- `timeout:` is the maximum number of milliseconds you can wait before return a `TimeoutError`.
+- `threshold`: the maximum number of failures accepted before opening the circuit.
+- `timeout:` the maximum number of milliseconds you can wait before returning a `TimeoutError`.
 - `resetTimeout`: number of milliseconds before the circuit will move from `open` to `half-open`
 - `onCircuitOpen`: async function that gets called when the circuit is `open` due to errors. It can modify the reply and return a `string` | `Buffer` | `Stream` payload.  If an `Error` is thrown it will be routed to your error handler.
 - `onTimeout`: async function that gets called when the circuit is `open` due to timeouts.  It can modify the reply and return a `string` | `Buffer` | `Stream` | `Error` payload.  If an `Error` is thrown it will be routed to your error handler.
@@ -111,8 +111,8 @@ Since it is not possible to apply the classic timeout feature of the pattern, in
 
 If you need a classic circuit breaker to wrap around an API call consider using [`easy-breaker`](https://github.com/delvedor/easy-breaker).
 
-## Acknowledgements
-Image curtesy of [Martin Fowler](https://martinfowler.com/bliki/CircuitBreaker.html).
+## Acknowledgments
+Image courtesy of [Martin Fowler](https://martinfowler.com/bliki/CircuitBreaker.html).
 
 <a name="license"></a>
 ## License
