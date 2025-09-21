@@ -46,7 +46,6 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "@fastify/pre-commit": "^2.1.0",
     "@types/node": "^24.0.8",
     "c8": "^10.1.2",
     "eslint": "^9.17.0",
@@ -72,10 +71,6 @@
       "type": "opencollective",
       "url": "https://opencollective.com/fastify"
     }
-  ],
-  "pre-commit": [
-    "lint",
-    "test"
   ],
   "publishConfig": {
     "access": "public"
