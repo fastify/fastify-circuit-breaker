@@ -1,0 +1,10 @@
+{
+  "all": true,
+  "exclude": ["test/", "coverage/", "examples/", "types/", "eslint.config.js"],
+  "clean": true,
+  "check-coverage": true,
+  "branches": 100,
+  "lines": 100,
+  "functions": 100,
+  "statements": 100
+}
