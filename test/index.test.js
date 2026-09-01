@@ -79,8 +79,8 @@ test('Should respond with a 503 once the threshold has been reached (timeout)', 
   })
 
   fastify.after(() => {
-    opts.preHandler = fastify.circuitBreaker()
-    fastify.get('/', opts, (req, reply) => {
+    const routeOpts = { ...opts, preHandler: fastify.circuitBreaker() }
+    fastify.get('/', routeOpts, (req, reply) => {
       t.assert.strictEqual(typeof req._cbTime, 'number')
       setTimeout(() => {
         reply.send(
@@ -90,8 +90,14 @@ test('Should respond with a 503 once the threshold has been reached (timeout)', 
     })
   })
 
-  fastify.inject('/?error=false&delay=100', (err, res) => {
-    t.assert.ifError(err)
+  const responses = await Promise.all([
+    fastify.inject('/?error=false&delay=100'),
+    fastify.inject('/?error=false&delay=100'),
+    fastify.inject('/?error=false&delay=100')
+  ])
+
+  for (const res of responses) {
+    t.assert.ok(res)
     t.assert.strictEqual(res.statusCode, 503)
     t.assert.deepStrictEqual({
       error: 'Service Unavailable',
@@ -99,44 +105,17 @@ test('Should respond with a 503 once the threshold has been reached (timeout)', 
       statusCode: 503,
       code: 'FST_ERR_CIRCUIT_BREAKER_TIMEOUT'
     }, JSON.parse(res.payload))
-  })
+  }
 
-  fastify.inject('/?error=false&delay=100', (err, res) => {
-    t.assert.ifError(err)
-    t.assert.strictEqual(res.statusCode, 503)
-    t.assert.deepStrictEqual({
-      error: 'Service Unavailable',
-      message: 'Timeout',
-      statusCode: 503,
-      code: 'FST_ERR_CIRCUIT_BREAKER_TIMEOUT'
-    }, JSON.parse(res.payload))
-  })
-
-  fastify.inject('/?error=false&delay=100', (err, res) => {
-    t.assert.ifError(err)
-    t.assert.strictEqual(res.statusCode, 503)
-    t.assert.deepStrictEqual({
-      error: 'Service Unavailable',
-      message: 'Timeout',
-      statusCode: 503,
-      code: 'FST_ERR_CIRCUIT_BREAKER_TIMEOUT'
-    }, JSON.parse(res.payload))
-  })
-
-  setTimeout(() => {
-    fastify.inject('/?error=false&delay=100', (err, res) => {
-      t.assert.ifError(err)
-      t.assert.strictEqual(res.statusCode, 503)
-      t.assert.deepStrictEqual({
-        error: 'Service Unavailable',
-        message: 'Circuit open',
-        statusCode: 503,
-        code: 'FST_ERR_CIRCUIT_BREAKER_OPEN'
-      }, JSON.parse(res.payload))
-    })
-  }, 200)
-
-  await sleep(200)
+  const res = await fastify.inject('/?error=false&delay=100')
+  t.assert.ok(res)
+  t.assert.strictEqual(res.statusCode, 503)
+  t.assert.deepStrictEqual({
+    error: 'Service Unavailable',
+    message: 'Circuit open',
+    statusCode: 503,
+    code: 'FST_ERR_CIRCUIT_BREAKER_OPEN'
+  }, JSON.parse(res.payload))
 })
 
 test('Should return 503 until the circuit is open', async t => {
