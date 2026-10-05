@@ -86,6 +86,9 @@ function fastifyCircuitBreaker (fastify, opts, next) {
       }
       if (route.onTimeout) {
         const errorPayload = await route.onTimeout(req, reply)
+        if (errorPayload instanceof Error) {
+          throw errorPayload
+        }
         return errorPayload
       }
 

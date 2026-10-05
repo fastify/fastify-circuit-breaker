@@ -602,6 +602,35 @@ test('onTimeout will handle a thrown error', async t => {
   }, JSON.parse(res.payload))
 })
 
+test('onTimeout will handle a returned error', async t => {
+  t.plan(2)
+
+  const fastify = Fastify()
+  fastify.register(circuitBreaker, {
+    timeout: 50,
+    onTimeout: (_req, reply) => {
+      reply.statusCode = 504
+      return new Error('timed out')
+    }
+  })
+
+  fastify.after(() => {
+    fastify.get('/', { preHandler: fastify.circuitBreaker() }, (_req, reply) => {
+      setTimeout(() => {
+        reply.send({ hello: 'world' })
+      }, 100)
+    })
+  })
+
+  const res = await fastify.inject('/')
+  t.assert.ok(res)
+  t.assert.deepStrictEqual({
+    error: 'Gateway Timeout',
+    message: 'timed out',
+    statusCode: 504
+  }, JSON.parse(res.payload))
+})
+
 test('onCircuitOpen can be an async function', async t => {
   t.plan(6)
 
