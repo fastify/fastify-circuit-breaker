@@ -774,3 +774,170 @@ test('Should throw error on route status half open and circuit open', async t =>
 
   await sleep(1200)
 })
+
+test('Should count a single timeout only once toward threshold', async t => {
+  t.plan(9)
+
+  const fastify = Fastify()
+  await fastify.register(circuitBreaker, {
+    threshold: 2,
+    timeout: 30,
+    resetTimeout: 100
+  })
+
+  let handlerCalls = 0
+  fastify.get('/', { preHandler: fastify.circuitBreaker() }, async () => {
+    handlerCalls++
+    await sleep(60)
+    return { hello: 'world' }
+  })
+
+  const res1 = await fastify.inject('/')
+  t.assert.strictEqual(res1.statusCode, 503)
+  t.assert.strictEqual(res1.json().code, 'FST_ERR_CIRCUIT_BREAKER_TIMEOUT')
+  t.assert.strictEqual(handlerCalls, 1)
+
+  const res2 = await fastify.inject('/')
+  t.assert.strictEqual(res2.statusCode, 503)
+  t.assert.strictEqual(res2.json().code, 'FST_ERR_CIRCUIT_BREAKER_TIMEOUT')
+  t.assert.strictEqual(handlerCalls, 2)
+
+  const res3 = await fastify.inject('/')
+  t.assert.strictEqual(res3.statusCode, 503)
+  t.assert.strictEqual(res3.json().code, 'FST_ERR_CIRCUIT_BREAKER_OPEN')
+  t.assert.strictEqual(handlerCalls, 2)
+
+  await sleep(120)
+})
+
+test('Should allow only a single concurrent request in half-open state after timeout', async t => {
+  t.plan(4)
+
+  const fastify = Fastify()
+  await fastify.register(circuitBreaker, {
+    threshold: 1,
+    timeout: 30,
+    resetTimeout: 80
+  })
+
+  let handlerCalls = 0
+  fastify.get('/', { preHandler: fastify.circuitBreaker() }, async () => {
+    handlerCalls++
+    await sleep(60)
+    return { hello: 'world' }
+  })
+
+  const res1 = await fastify.inject('/')
+  t.assert.strictEqual(res1.statusCode, 503)
+  t.assert.strictEqual(res1.json().code, 'FST_ERR_CIRCUIT_BREAKER_TIMEOUT')
+
+  await sleep(100)
+
+  const responses = await Promise.all([
+    fastify.inject('/'),
+    fastify.inject('/')
+  ])
+  const codes = responses.map(res => res.json().code).sort()
+  t.assert.deepStrictEqual(codes, [
+    'FST_ERR_CIRCUIT_BREAKER_OPEN',
+    'FST_ERR_CIRCUIT_BREAKER_TIMEOUT'
+  ])
+  t.assert.strictEqual(handlerCalls, 2)
+
+  await sleep(100)
+})
+
+test('Should not re-execute onSend hooks on non-Error 500 or thrown onTimeout/onCircuitOpen errors', async t => {
+  t.plan(7)
+
+  let onTimeoutCalls = 0
+  const timeoutApp = Fastify()
+  await timeoutApp.register(circuitBreaker, {
+    threshold: 2,
+    timeout: 30,
+    resetTimeout: 100,
+    onTimeout: (_req, reply) => {
+      onTimeoutCalls++
+      reply.statusCode = 504
+      throw new Error('timed out')
+    }
+  })
+
+  timeoutApp.get('/', { preHandler: timeoutApp.circuitBreaker() }, async () => {
+    await sleep(60)
+    return { hello: 'world' }
+  })
+
+  const tRes1 = await timeoutApp.inject('/')
+  t.assert.strictEqual(tRes1.statusCode, 504)
+  t.assert.strictEqual(onTimeoutCalls, 1)
+
+  const tRes2 = await timeoutApp.inject('/')
+  t.assert.strictEqual(tRes2.statusCode, 504)
+  t.assert.strictEqual(onTimeoutCalls, 2)
+
+  await sleep(120)
+
+  let onCircuitOpenCalls = 0
+  let halfOpenHandlerCalls = 0
+  const openApp = Fastify()
+  await openApp.register(circuitBreaker, {
+    threshold: 1,
+    timeout: 1000,
+    resetTimeout: 80,
+    onCircuitOpen: (_req, reply) => {
+      onCircuitOpenCalls++
+      reply.statusCode = 503
+      throw new Error('custom open')
+    }
+  })
+
+  openApp.get('/', { preHandler: openApp.circuitBreaker() }, async (_req, reply) => {
+    halfOpenHandlerCalls++
+    await sleep(40)
+    return reply.code(500).send({ ok: false })
+  })
+
+  const oRes1 = await openApp.inject('/')
+  t.assert.strictEqual(oRes1.statusCode, 503)
+  t.assert.strictEqual(onCircuitOpenCalls, 1)
+
+  await sleep(100)
+
+  await Promise.all([
+    openApp.inject('/'),
+    openApp.inject('/')
+  ])
+  t.assert.strictEqual(halfOpenHandlerCalls, 2)
+
+  await sleep(100)
+})
+
+test('Should not start duplicate reset timers when concurrent requests exceed threshold', async t => {
+  t.plan(4)
+
+  const fastify = Fastify()
+  await fastify.register(circuitBreaker, {
+    threshold: 1,
+    timeout: 30,
+    resetTimeout: 80
+  })
+
+  fastify.get('/', { preHandler: fastify.circuitBreaker() }, async req => {
+    await sleep(req.query.delay ? Number(req.query.delay) : 60)
+    return { hello: 'world' }
+  })
+
+  const responses = await Promise.all([
+    fastify.inject('/?delay=60'),
+    fastify.inject('/?delay=70')
+  ])
+  t.assert.strictEqual(responses[0].json().code, 'FST_ERR_CIRCUIT_BREAKER_TIMEOUT')
+  t.assert.strictEqual(responses[1].json().code, 'FST_ERR_CIRCUIT_BREAKER_TIMEOUT')
+
+  await sleep(100)
+
+  const probe = await fastify.inject('/?delay=0')
+  t.assert.strictEqual(probe.statusCode, 200)
+  t.assert.deepStrictEqual(probe.json(), { hello: 'world' })
+})
