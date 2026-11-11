@@ -7,6 +7,7 @@ const createError = require('@fastify/error')
 const OPEN = Symbol('open')
 const HALFOPEN = Symbol('half-open')
 const CLOSE = Symbol('close')
+const HANDLED = Symbol('handled')
 
 function fastifyCircuitBreaker (fastify, opts, next) {
   opts = opts || {}
@@ -24,6 +25,7 @@ function fastifyCircuitBreaker (fastify, opts, next) {
   fastify.decorateRequest('_cbTime', 0)
   fastify.decorateRequest('_cbIsOpen', false)
   fastify.decorateRequest('_cbRouteId', 0)
+  fastify.decorateRequest(HANDLED, false)
   fastify.decorate('circuitBreaker', circuitBreaker)
   fastify.addHook('onSend', onSend)
 
@@ -72,9 +74,10 @@ function fastifyCircuitBreaker (fastify, opts, next) {
   }
 
   async function onSend (req, reply, _payload) {
-    if (req._cbRouteId === 0 || req._cbIsOpen === true) {
+    if (req._cbRouteId === 0 || req._cbIsOpen === true || req[HANDLED] === true) {
       return
     }
+    req[HANDLED] = true
     const route = cache.get(req._cbRouteId)
     route.currentlyRunningRequest--
 
